@@ -23,48 +23,51 @@
         return grid;
     }
 }*/
-public class MazeRezolve{
-    public static void CreateMaze(Grid grid)
-    {
-        var stack = new Stack<Cell>();
-        var visited = new HashSet<Cell>();
 
-        Cell startCell = grid[0,0]!;
-        stack.Push(startCell);
-        visited.Add(startCell);
-
-        // Visitar celdas vecinas hasta que no haya elementos en la pila
-        while (stack.Count > 0)
+namespace Project {
+    public class MazeRezolve{
+        public static void CreateMaze(Grid grid)
         {
-            Cell currentCell = stack.Peek();
-            List<Cell> unvisitedNeighbors = GetUnvisitedNeighbors(currentCell, visited);
+            var stack = new Stack<Cell>();
+            var visited = new HashSet<Cell>();
 
-            if (unvisitedNeighbors.Count > 0)
+            Cell startCell = grid[0,0]!;
+            stack.Push(startCell);
+            visited.Add(startCell);
+
+            // Visitar celdas vecinas hasta que no haya elementos en la pila
+            while (stack.Count > 0)
             {
-                Cell chosenNeighbor = unvisitedNeighbors[new Random().Next(unvisitedNeighbors.Count)];
-                currentCell.Link(chosenNeighbor);
-                stack.Push(chosenNeighbor);
-                visited.Add(chosenNeighbor);
+                Cell currentCell = stack.Peek();
+                List<Cell> unvisitedNeighbors = GetUnvisitedNeighbors(currentCell, visited);
+
+                if (unvisitedNeighbors.Count > 0)
+                {
+                    Cell chosenNeighbor = unvisitedNeighbors[new Random().Next(unvisitedNeighbors.Count)];
+                    currentCell.Link(chosenNeighbor);
+                    stack.Push(chosenNeighbor);
+                    visited.Add(chosenNeighbor);
+                }
+                else stack.Pop();
             }
-            else stack.Pop();
         }
-    }
-    private static List<Cell> GetUnvisitedNeighbors(Cell cell, HashSet<Cell> visited)
-    {
-        List<Cell> un_neighbors = new List<Cell>();
+        private static List<Cell> GetUnvisitedNeighbors(Cell cell, HashSet<Cell> visited)
+        {
+            List<Cell> un_neighbors = new List<Cell>();
 
-        if (cell.North != null && !visited.Contains(cell.North))
-            un_neighbors.Add(cell.North);
-        
-        if (cell.South != null && !visited.Contains(cell.South))
-            un_neighbors.Add(cell.South);
+            if (cell.North != null && !visited.Contains(cell.North))
+                un_neighbors.Add(cell.North);
+            
+            if (cell.South != null && !visited.Contains(cell.South))
+                un_neighbors.Add(cell.South);
 
-        if (cell.East != null && !visited.Contains(cell.East))
-            un_neighbors.Add(cell.East);
+            if (cell.East != null && !visited.Contains(cell.East))
+                un_neighbors.Add(cell.East);
 
-        if (cell.West != null && !visited.Contains(cell.West))
-            un_neighbors.Add(cell.West);
+            if (cell.West != null && !visited.Contains(cell.West))
+                un_neighbors.Add(cell.West);
 
-        return un_neighbors;
+            return un_neighbors;
+        }
     }
 }
