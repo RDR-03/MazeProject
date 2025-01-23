@@ -15,7 +15,7 @@ public class Character{
         PlayerCell = grid[yPos, xPos];
         Turns = turns;
     }
-    public static void Move(Character c, Grid grid)
+    public static void Move(Character c)
     {
         var temp = c.Turns;
         while(c.Turns > 0) {
@@ -26,7 +26,7 @@ public class Character{
                 && c.PlayerCell!.IsLinked(c.PlayerCell.North!))
             {
                 c.yPos -= 1;
-                c.PlayerCell = grid[c.yPos, c.xPos];
+                c.PlayerCell = Program.grid![c.yPos, c.xPos];
                 ReturnVictim();
                 c.Turns -= 1;
             }
@@ -34,7 +34,7 @@ public class Character{
                 && c.PlayerCell!.IsLinked(c.PlayerCell.South!))
             {
                 c.yPos += 1;
-                c.PlayerCell = grid[c.yPos, c.xPos];
+                c.PlayerCell = Program.grid![c.yPos, c.xPos];
                 ReturnVictim();
                 c.Turns -= 1;
             }
@@ -42,7 +42,7 @@ public class Character{
                 && c.PlayerCell!.IsLinked(c.PlayerCell.West!))
             {
                 c.xPos -= 1;
-                c.PlayerCell = grid[c.yPos, c.xPos];
+                c.PlayerCell = Program.grid![c.yPos, c.xPos];
                 ReturnVictim();
                 c.Turns -= 1;
             }
@@ -50,7 +50,7 @@ public class Character{
                 && c.PlayerCell!.IsLinked(c.PlayerCell.East!))
             {
                 c.xPos += 1;
-                c.PlayerCell = grid[c.yPos, c.xPos];
+                c.PlayerCell = Program.grid![c.yPos, c.xPos];
                 ReturnVictim();
                 c.Turns -= 1;
             }
@@ -58,12 +58,12 @@ public class Character{
             if (cki.Key == ConsoleKey.Escape) 
                 Menu.PauseMenu();
             
-            Program.PaintMaze(grid);
+            Program.PaintMaze(Program.grid!);
             Program.GameStatus();
         }
         c.Turns = temp;
     }
-    public static bool VictimReached() {
+    private static bool VictimReached() {
         if (Program.badGuy!.PlayerCell == Program.goodGuy!.PlayerCell)
             return true;
         else return false;
@@ -76,5 +76,16 @@ public class Character{
             Program.goodGuy.yPos = 0;
             Program.goodGuy.xPos = 0;
         }
+    }
+    private void ExitReached(){
+        if (Program.badGuy!.PlayerCell == Program.maze_exit!.ObjectCell)
+            Console.WriteLine($"{Program.badGuy.Name} ha alcanzado la salida antes que {Program.goodGuy}");
+            Console.WriteLine($"{Program.badGuy.Name} es el ganador de la partida");
+            Thread.Sleep(1500);
+            Environment.Exit(0);
+        if (Program.goodGuy!.PlayerCell == Program.maze_exit.ObjectCell)
+            Console.WriteLine($"{Program.goodGuy.Name} es el ganador de la partida");
+            Thread.Sleep(1500);
+            Environment.Exit(0);
     }
 }

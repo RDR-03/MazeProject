@@ -8,11 +8,7 @@ public class Cell {
     public Cell? South { get; set; }
     public Cell? East { get; set; }
     public Cell? West { get; set; }
-    /*public List<Cell> Neighbors {
-        get {
-            return new[] {North, South, East, West}.Where(c => c != null).ToList()!;
-        }
-    }*/
+    
     // Celdas vinculadas a esta celda
     private readonly Dictionary<Cell, bool> _links;
     public List<Cell> Links => _links.Keys.ToList();

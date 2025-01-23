@@ -6,6 +6,9 @@ namespace Project;
 class Program
 {
     public static Grid? grid;
+    public static Objects? maze_exit;
+    public static Objects? Shelter;
+    public static Objects? Car;
     public static Character? badGuy;
     public static Character? goodGuy;
     static int rounds;
@@ -18,8 +21,9 @@ class Program
         string charSelection2 = Selections.Item2;
         
         grid = new Grid(13,13);
-        MazeRezolve.CreateMaze(grid);
+        MazeResolve.CreateMaze(grid);
 
+        // Instanciar asesino
         if (charSelection1.StartsWith("Jason") || charSelection2.StartsWith("Jason"))
             badGuy = new Character ("Jason", grid.Rows - 1, 0, grid, 3);
 
@@ -39,29 +43,20 @@ class Program
         else if (charSelection1.StartsWith("Constan") || charSelection2.StartsWith("Constan"))
             goodGuy = new Character ("Constantine", 0, 0, grid, 4);
         
-        Console.WriteLine($"{badGuy!.Name}");
-        Console.WriteLine (goodGuy!.Name);
-        /*if (seleccion == 1) {
-            badGuy = new Character("Jason", grid.Rows - 1, 0, grid, 3);
-            Console.WriteLine(" A Jugador2 le toco Joel");
-            Thread.Sleep(1500);
-            goodGuy = new Character("Joel", 0, 0, grid, 5);
-        }
-        else if (seleccion == 4) {
-            goodGuy = new Character("Joel", 0, 0, grid, 5);
-            Console.WriteLine(" A Jugador2 le toco Jason");
-            Thread.Sleep(1500);
-            badGuy = new Character("Jason", (grid.Rows- 1)/2 , 0, grid, 3);
-        }*/
+        Random rand = new Random();
+        maze_exit = new Objects ("Exit", 0, grid.Columns - 1);
+        Car = new Objects ("Car", 3, rand.Next(grid.Columns-1));
+        Shelter = new Objects ("Shelter", 6, rand.Next(grid.Columns/2));
+        
         PaintMaze(grid);
-        /*GameStatus();
+        GameStatus();
         
         rounds = 0;
         while (rounds<5) {                       
-            Character.Move(goodGuy!, grid);  ;             
-            Character.Move(badGuy!, grid);
+            Character.Move(goodGuy!);
+            Character.Move(badGuy!);
             rounds ++;
-        }*/
+        }
     }
     
     public static void PaintMaze(Grid g)
@@ -82,7 +77,8 @@ class Program
                 
                 // Paredes de la derecha de cada celda
                 string east = cell.IsLinked(cell.East!) ? "   " : " | ";
-                // Ubicacion de personajes
+                
+                // Ubicacion de personajes y objetos
                 string body = "   ";
                 if (cell == badGuy!.PlayerCell) {
                     switch (badGuy.Name) 
@@ -112,6 +108,13 @@ class Program
                             break;
                     } 
                 }
+                if (cell == Shelter!.ObjectCell)
+                    body = "Re ";
+                if (cell == Car!.ObjectCell)
+                    body = " C ";
+                if (cell == maze_exit!.ObjectCell)
+                    body = "Sal";
+                
                 top += body + east;
                 
                 // Paredes inferiores de cada celda

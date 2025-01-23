@@ -1,31 +1,5 @@
-/*public class Sidewinder {
-    public static Grid Resolve(Grid grid, int seed = 1) {
-        var rand = seed >= 0 ? new Random(seed) : new Random();
-        foreach (var row in grid.Row) {
-            var run = new List<Cell>();
-
-            foreach (var cell in row) {
-                run.Add(cell);
-
-                var EasternBoundry = cell.East == null;
-                var NorthernBoundry = cell.North == null;
-
-                var ShouldCloseOut = EasternBoundry || (!NorthernBoundry && rand.Next(2) == 0);
-                if (ShouldCloseOut) {
-                    Cell member = run[rand.Next(seed)];
-                    if (member.North != null)
-                        member.Link(member.North);
-                    run.Clear();                   
-                }
-                else cell.Link(cell.East!);
-            }
-        }
-        return grid;
-    }
-}*/
-
 namespace Project;
-public class MazeRezolve{
+public class MazeResolve{
     public static void CreateMaze(Grid grid)
     {
         var stack = new Stack<Cell>();
