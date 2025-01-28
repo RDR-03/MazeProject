@@ -6,7 +6,6 @@ namespace Project;
 public class Grid {
     public int Rows { get; }
     public int Columns { get; }
-    public string body {get; set;}
     private List<List<Cell>>? _grid;
    
     public virtual Cell? this[int row, int column] {
@@ -48,7 +47,6 @@ public class Grid {
     public Grid (int rows, int cols) {
         Rows = rows;
         Columns = cols;
-        body = "   ";
     
         PrepareGrid();
         ConfigCells();
