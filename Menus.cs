@@ -104,7 +104,7 @@ public class Menu
         var H_S = new Style(Color.Red, Color.Default, Decoration.SlowBlink);
         var firstSelection = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title("Seleccione Personajes")
+                .Title("Jugardor 1 Seleccione Un Personaje")
                 .PageSize(8)
                 .HighlightStyle(H_S)
                 .AddChoiceGroup("Asesinos", 
@@ -128,7 +128,7 @@ public class Menu
 
         var secondSelection = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-            .Title ($"Seleccione ahora un {remainingGroup}")
+            .Title ($"Seleccione Ahora Un {remainingGroup}")
             .PageSize(8)
             .HighlightStyle (H_S)
             .AddChoices(remainingChoices)

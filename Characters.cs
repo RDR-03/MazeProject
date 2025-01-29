@@ -7,27 +7,30 @@ public class Character {
     public int xPos;
     public Cell? PlayerCell {get; set;}
     public int Turns;
+    public int AbilityCooldown;
 
     private static bool shelterVisited;
     private static bool carTaken;
-    private static int temp;
     
-    public Character(string character, int RowPos, int ColumnPos, int turns) //, Efects ab
+    public Character(string character, int RowPos, int ColumnPos, int turns, int cool)
     {   
         Name = character;
         yPos = RowPos;
         xPos = ColumnPos;
         PlayerCell = Program.grid![yPos, xPos];
         Turns = turns;
+        AbilityCooldown = cool;
     }
     
-    public static void Move(Character c)
+    public static void Play(Character c)
     {
-        temp = c.Turns;
+        var temp = c.Turns;
 
         while(c.Turns > 0) {
             
             Console.WriteLine($"Es el turno de {c.Name}");
+            
+            if (c.AbilityCooldown == 0) Console.WriteLine("Habilidad disponible");
             
             if (Program.goodGuy!.PlayerCell == Program.Shelter!.ObjectCell)
                 shelterVisited = true;
@@ -65,6 +68,13 @@ public class Character {
                 c.Turns -= 1;
             }
             
+            if (c.AbilityCooldown == 0 && cki.Key == ConsoleKey.H)
+                RunAbility(c);
+            
+            // Pausa
+            if (cki.Key == ConsoleKey.Escape) 
+                Menu.PauseMenu();
+            
             ReturnVictim();
             
             // Accion al caer en trampas
@@ -74,7 +84,7 @@ public class Character {
 
                 Console.WriteLine("\nHa caido en un agujero. Pierde su ronda intentando salir.");
                 Thread.Sleep(1500);
-                Efects.MantainPlayer(c, c.Turns);
+                Effects.MantainPlayer(c, c.Turns);
                 Program.Trap1.ObjectCell = Program.grid![0, 0];
             }
             if (c.PlayerCell == Program.Trap2!.ObjectCell)
@@ -87,19 +97,11 @@ public class Character {
             }
             
             // Acciones tras obtener el carro
-            if (Program.goodGuy!.PlayerCell == Program.Car!.ObjectCell) {
-                carTaken = true;
-                Program.goodGuy.Turns = 8;
-            }
             if (carTaken) {
-                Program.Car.xPos = Program.goodGuy.xPos;
+                Program.Car!.xPos = Program.goodGuy.xPos;
                 Program.Car.yPos = Program.goodGuy.yPos;
                 Program.Car.ObjectCell = Program.goodGuy.PlayerCell;
             }
-            
-            // Pausa
-            if (cki.Key == ConsoleKey.Escape) 
-                Menu.PauseMenu();
             
             Program.PaintMaze(Program.grid!);
             Program.GameStatus();
@@ -156,9 +158,30 @@ public class Character {
             Environment.Exit(0);
         }
         if (Program.goodGuy!.PlayerCell == Program.maze_exit.ObjectCell) {
-            Console.WriteLine($"\n{Program.goodGuy.Name} es el ganador de la partida");
+            Console.WriteLine($"\n{Program.goodGuy.Name} logro escapar del laberinto");
+            Console.WriteLine($"{Program.goodGuy.Name} es el ganador de la partida");
             Thread.Sleep(1500);
             Environment.Exit(0);
         }
+    }
+
+    private static void RunAbility(Character c) {
+        if (c.Name.StartsWith("Fred")) {
+            Effects.PutToSleep();
+        }
+        if (c.Name.StartsWith("Luci")) {
+            Effects.RebuildMaze();
+        }
+        if (c.Name.StartsWith("Jas")) {
+            Effects.SmashWall();
+        }
+        if (c.Name.StartsWith("Joe")) {
+
+        } 
+        if (c.Name.StartsWith("Sam")) {
+
+        } 
+        if (c.Name.StartsWith("Const"))
+            Effects.SwitchPos();
     }
 }

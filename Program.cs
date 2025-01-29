@@ -15,7 +15,7 @@ class Program
     
     public static Character? badGuy;
     public static Character? goodGuy;
-    static int rounds;
+    public static int rounds;
     
     static void Main(string[] args)
     {               
@@ -30,23 +30,23 @@ class Program
 
         // Instanciar asesino
         if (charSelection1.StartsWith("Jason") || charSelection2.StartsWith("Jason"))
-            badGuy = new Character ("Jason", grid.Rows - 1, 0, 3);
+            badGuy = new Character ("Jason", grid.Rows - 1, 0, 3, 4);
 
         else if (charSelection1.StartsWith("Fred") || charSelection2.StartsWith("Fred"))
-            badGuy = new Character ("Freddy Krueger", grid.Rows - 1, 0, 2);
+            badGuy = new Character ("Freddy Krueger", grid.Rows - 1, 0, 2, 3);
         
         else if (charSelection1.StartsWith("Luci") || charSelection2.StartsWith("Luci"))
-            badGuy = new Character ("Lucifer", grid.Rows - 1, 0, 3);
+            badGuy = new Character ("Lucifer", grid.Rows - 1, 0, 3, 5);
         
         // Instanciar sobreviviente
         if (charSelection1.StartsWith("Joel") || charSelection2.StartsWith("Joel"))
-            goodGuy = new Character ("Joel", 0, 0, 3);
+            goodGuy = new Character ("Joel", 0, 0, 3, 4);
 
         else if (charSelection1.StartsWith("Sam") || charSelection2.StartsWith("Sam"))
-            goodGuy = new Character ("Sam Bridges", 0, 0, 5);
+            goodGuy = new Character ("Sam Bridges", 0, 0, 5, 3);
         
         else if (charSelection1.StartsWith("Constan") || charSelection2.StartsWith("Constan"))
-            goodGuy = new Character ("Constantine", 0, 0, 4);
+            goodGuy = new Character ("Constantine", 0, 0, 4, 6);
         
         // Objetos del laberinto
         Random rand = new Random();
@@ -62,9 +62,14 @@ class Program
         
         rounds = 0;
         while (true) {                       
-            Character.Move(goodGuy!);          
-            Character.Move(badGuy!);
+
+            Character.Play(goodGuy!);          
+            Character.Play(badGuy!);
             rounds ++;
+            if (goodGuy.AbilityCooldown > 0)
+                goodGuy.AbilityCooldown --;
+            if (badGuy.AbilityCooldown > 0)
+                badGuy.AbilityCooldown --;
         }
     }
     
@@ -125,7 +130,7 @@ class Program
                     } 
                 }
                 if (cell == Shelter!.ObjectCell)
-                    body = "Re ";
+                    body = "Ref";
                 if (cell == Car!.ObjectCell)
                     body = "Car";
                 if (cell == maze_exit!.ObjectCell)
@@ -149,14 +154,17 @@ class Program
         table.Title = new TableTitle (text:"");
         
         table.AddColumn("Jugadores");
-            table.AddColumn("Velocidad");
-            table.AddColumn("Reutilizacion de habilidad");
-            
-            string stamina_bad = Convert.ToString(badGuy!.Turns);
-            string stamina_good = Convert.ToString(goodGuy!.Turns);
-            table.AddRow([badGuy!.Name, stamina_bad, "2"]);
-            table.AddRow([goodGuy!.Name, stamina_good,"6"]);
-            AnsiConsole.Write(table);
-            Console.WriteLine("Presione (esc) para pausar juego");
+        table.AddColumn("Velocidad");
+        table.AddColumn("Reutilizacion de habilidad");
+        
+        string stamina_bad = Convert.ToString(badGuy!.Turns);
+        string stamina_good = Convert.ToString(goodGuy!.Turns);
+        string cooldown_bad = Convert.ToString(badGuy.AbilityCooldown);
+        string cooldown_good = Convert.ToString(goodGuy.AbilityCooldown);
+        
+        table.AddRow([badGuy!.Name, stamina_bad, cooldown_bad]);
+        table.AddRow([goodGuy!.Name, stamina_good, cooldown_good]);
+        AnsiConsole.Write(table);
+        Console.WriteLine("Presione (esc) para pausar juego");
     }
 }
