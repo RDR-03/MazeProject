@@ -9,13 +9,17 @@ class Program
     public static Objects? maze_exit;
     public static Objects? Shelter;
     public static Objects? Car;
-    public static Objects? Trap1;
-    public static Objects? Trap2;
-    public static Objects? Trap3;
+    
+    public static Trap[]? _Traps;
+    public static Trap? Trap1;
+    public static Trap? Trap2;
+    public static Trap? Trap3;
     
     public static Character? badGuy;
     public static Character? goodGuy;
     public static int rounds;
+    public static int cool_bad;
+    public static int cool_good;
     
     static void Main(string[] args)
     {               
@@ -53,23 +57,30 @@ class Program
         maze_exit = new Objects ("Exit", grid.Rows/2, grid.Columns - 1);
         Car = new Objects ("Car", 3, rand.Next(grid.Columns-1));
         Shelter = new Objects ("Shelter", rand.Next(1,grid.Columns - 2), rand.Next(1,grid.Columns/2));
-        Trap1 = new Objects ("T1",rand.Next(2,grid.Rows - 2), rand.Next(2,grid.Columns - 2));
-        Trap2 = new Objects ("T2",rand.Next(3,grid.Rows - 3), rand.Next(3,grid.Columns - 3));
-        Trap3 = new Objects ("T3",rand.Next(4,grid.Rows - 4), rand.Next(4,grid.Columns - 4));
         
+        _Traps = new Trap[] {
+            Trap1 = new Trap ("Reten",rand.Next(2,grid.Rows - 1), rand.Next(2,grid.Columns/4)),
+            Trap2 = new Trap ("Reten",rand.Next(3,grid.Rows - 2), rand.Next(grid.Columns/4,grid.Columns/2)),
+            Trap3 = new Trap ("Reten",rand.Next(4,grid.Rows - 4), rand.Next(0,grid.Columns - 1)),
+        };
+
         PaintMaze(grid);
         GameStatus();
         
         rounds = 0;
-        while (true) {                       
+        cool_bad = badGuy!.AbilityCooldown;
+        cool_good = goodGuy!.AbilityCooldown;
 
-            Character.Play(goodGuy!);          
+        while (true) {
+            Character.Play(goodGuy!);
+            
             Character.Play(badGuy!);
-            rounds ++;
+           
             if (goodGuy.AbilityCooldown > 0)
                 goodGuy.AbilityCooldown --;
             if (badGuy.AbilityCooldown > 0)
                 badGuy.AbilityCooldown --;
+            rounds ++;
         }
     }
     
@@ -94,12 +105,11 @@ class Program
                 
                 // Ubicacion de personajes y objetos
                 string body = "   ";
-                if (cell == Trap1!.ObjectCell)
-                    body = "T1 ";
-                if (cell == Trap2!.ObjectCell)
-                    body = "T2 ";
-                if (cell == Trap3!.ObjectCell)
-                    body = "T3 ";
+                
+                foreach (var trap in _Traps!) {
+                    if (trap.TrapCell == cell)
+                        body = "T1 ";
+                }
                 
                 if (cell == goodGuy!.PlayerCell) {
                     switch (goodGuy.Name) 

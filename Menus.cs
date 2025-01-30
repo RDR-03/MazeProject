@@ -128,7 +128,7 @@ public class Menu
 
         var secondSelection = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-            .Title ($"Seleccione Ahora Un {remainingGroup}")
+            .Title ($"Jugador 2 Seleccione Un {remainingGroup}")
             .PageSize(8)
             .HighlightStyle (H_S)
             .AddChoices(remainingChoices)

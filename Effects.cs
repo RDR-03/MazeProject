@@ -1,18 +1,10 @@
 namespace Project;
 public class Effects {
+
     public static void MantainPlayer(Character c, int time){
         c.Turns -= time;
     }
 
-    // cooldown => pendiente
-    public static void PutToSleep() {
-        for (int i = 0; i < 2; i++) {
-            Console.WriteLine($"Freddy indujo a {Program.goodGuy!.Name} al sueño y duerme por {2-i} rondas");
-            Character.Play(Program.badGuy!);
-            Program.rounds++;
-        }
-    }
-    
     public static void SwitchPos() {
         
         Console.WriteLine($"Constantine llevo a cabo un conjuro de intercambio de posicion con {Program.badGuy!.Name}");
@@ -22,7 +14,7 @@ public class Effects {
         var yTemp = Program.badGuy.yPos;
         var CellTemp = Program.badGuy.PlayerCell;
 
-        Program.badGuy.xPos = Program.goodGuy.xPos;
+        Program.badGuy.xPos = Program.goodGuy!.xPos;
         Program.badGuy.yPos = Program.goodGuy.yPos;
         Program.badGuy.PlayerCell = Program.goodGuy.PlayerCell;
 
@@ -30,12 +22,30 @@ public class Effects {
         Program.goodGuy.yPos = yTemp;
         Program.goodGuy.PlayerCell = CellTemp;
     }
+    public static void PutToSleep() {
+        for (int i = 0; i < 2; i++) {
+            Console.WriteLine($"Freddy indujo a {Program.goodGuy!.Name} al sueño y duerme por {3-i} rondas");
+            
+            // xq no corre ?
+            // if (i == 2)
+            //    Console.WriteLine($"Freddy indujo a {Program.goodGuy!.Name} al sueño y duerme por 1 ronda");
+
+            Thread.Sleep(2000);
+            Program.badGuy!.AbilityCooldown = Program.cool_bad;
+
+            Console.Clear();
+            Program.PaintMaze(Program.grid!);
+            Program.GameStatus();
+            Character.Play(Program.badGuy!);
+            Program.rounds++;
+        }
+    }
 
     public static void SmashWall() {
         Console.WriteLine("Jason puede romper una pared en el siguiente movimiento");
         Console.WriteLine("Introduce una direccion valida hacia la cual moverte");
         
-        var ypos = Program.badGuy.yPos;
+        var ypos = Program.badGuy!.yPos;
         var xpos = Program.badGuy.xPos;
         var cell = Program.badGuy.PlayerCell;
 
@@ -48,13 +58,15 @@ public class Effects {
                     Console.WriteLine("No hay pared en esta direccion que Jason pueda romper. Aun asi continua su marcha");
                     Thread.Sleep(2000);
                 }
-                if (!cell.IsLinked(cell.North))
+                if (!cell.IsLinked(cell.North)) {
                     cell.Link(cell.North);
-
+                    Program.badGuy!.AbilityCooldown = Program.cool_bad;
+                }
+                
                 Program.badGuy.yPos -= 1;
                 ypos = Program.badGuy.yPos;
             
-                Program.badGuy.PlayerCell = Program.grid[ypos, xpos];
+                Program.badGuy.PlayerCell = Program.grid![ypos, xpos];
                 Program.badGuy.Turns -= 1;
             }
             if (cell.North == null) {
@@ -70,13 +82,15 @@ public class Effects {
                     Console.WriteLine("No hay pared en esta direccion que Jason pueda romper. Aun asi continua su marcha");
                     Thread.Sleep(2000);
                 }
-                if (!cell.IsLinked(cell.South))
+                if (!cell.IsLinked(cell.South)) {
                     cell.Link(cell.South);
+                    Program.badGuy!.AbilityCooldown = Program.cool_bad;
+                }
 
                 Program.badGuy.yPos += 1;
                 ypos = Program.badGuy.yPos;
 
-                Program.badGuy.PlayerCell = Program.grid[ypos, xpos];
+                Program.badGuy.PlayerCell = Program.grid![ypos, xpos];
                 Program.badGuy.Turns -= 1;
             }
             if (cell.South == null) {
@@ -92,13 +106,15 @@ public class Effects {
                     Console.WriteLine("No hay pared en esta direccion que Jason pueda romper. Aun asi continua su marcha");
                     Thread.Sleep(2000);
                 }
-                if (!cell.IsLinked(cell.East))
+                if (!cell.IsLinked(cell.East)) {
                     cell.Link(cell.East);
+                    Program.badGuy!.AbilityCooldown = Program.cool_bad;
+                }
 
                 Program.badGuy.xPos += 1;
                 xpos = Program.badGuy.xPos;
 
-                Program.badGuy.PlayerCell = Program.grid[ypos, xpos];
+                Program.badGuy.PlayerCell = Program.grid![ypos, xpos];
                 Program.badGuy.Turns -= 1;
             }
             if (cell.East == null) {
@@ -114,13 +130,14 @@ public class Effects {
                     Console.WriteLine("No hay pared en esta direccion que Jason pueda romper. Aun asi continua su marcha");
                     Thread.Sleep(2000);
                 }
-                if (!cell.IsLinked(cell.West))
+                if (!cell.IsLinked(cell.West)) {
                     cell.Link(cell.West);
-
+                    Program.badGuy!.AbilityCooldown = Program.cool_bad;
+                }
                 Program.badGuy.xPos -= 1;
                 xpos = Program.badGuy.xPos;
 
-                Program.badGuy.PlayerCell = Program.grid[ypos, xpos];
+                Program.badGuy.PlayerCell = Program.grid![ypos, xpos];
                 Program.badGuy.Turns -= 1;
             }
             if (cell.West == null) {
@@ -130,6 +147,7 @@ public class Effects {
         }
     }
 
+    
     public static void RebuildMaze() {
         Console.WriteLine("Lucifer cambio la estructura del laberinto tras desatar su ira");
         Thread.Sleep(2000);

@@ -11,7 +11,8 @@ public class Character {
 
     private static bool shelterVisited;
     private static bool carTaken;
-    
+
+
     public Character(string character, int RowPos, int ColumnPos, int turns, int cool)
     {   
         Name = character;
@@ -24,77 +25,42 @@ public class Character {
     
     public static void Play(Character c)
     {
-        var temp = c.Turns;
+        var temp_turns = c.Turns;
 
         while(c.Turns > 0) {
             
             Console.WriteLine($"Es el turno de {c.Name}");
             
-            if (c.AbilityCooldown == 0) Console.WriteLine("Habilidad disponible");
+            if (c.Name != "Joel" && c.AbilityCooldown == 0)
+                Console.WriteLine("Habilidad disponible. Presione (H) para utilizarla");
             
             if (Program.goodGuy!.PlayerCell == Program.Shelter!.ObjectCell)
                 shelterVisited = true;
               
             ExitReached();
-
-            // Realizar movimiento
-            ConsoleKeyInfo cki = Console.ReadKey(true);
-            if ((cki.Key == ConsoleKey.W || cki.Key == ConsoleKey.UpArrow)
-                && c.PlayerCell!.IsLinked(c.PlayerCell.North!))
-            {
-                c.yPos -= 1;
-                c.PlayerCell = Program.grid![c.yPos, c.xPos];
-                c.Turns -= 1;
-            }
-            if ((cki.Key == ConsoleKey.S || cki.Key == ConsoleKey.DownArrow)
-                && c.PlayerCell!.IsLinked(c.PlayerCell.South!))
-            {
-                c.yPos += 1;
-                c.PlayerCell = Program.grid![c.yPos, c.xPos];
-                c.Turns -= 1;
-            }
-            if ((cki.Key == ConsoleKey.A || cki.Key == ConsoleKey.LeftArrow)
-                && c.PlayerCell!.IsLinked(c.PlayerCell.West!))
-            {
-                c.xPos -= 1;
-                c.PlayerCell = Program.grid![c.yPos, c.xPos];
-                c.Turns -= 1;
-            }
-            if ((cki.Key == ConsoleKey.D || cki.Key == ConsoleKey.RightArrow)
-                && c.PlayerCell!.IsLinked(c.PlayerCell.East!))
-            {
-                c.xPos += 1;
-                c.PlayerCell = Program.grid![c.yPos, c.xPos];
-                c.Turns -= 1;
-            }
             
-            if (c.AbilityCooldown == 0 && cki.Key == ConsoleKey.H)
+            ConsoleKeyInfo cki = Console.ReadKey(true);
+            Move(cki, c);
+            
+            // Activar habilidad
+            if (c.Name != "Joel" && c.AbilityCooldown == 0 && cki.Key == ConsoleKey.H) {
                 RunAbility(c);
+
+                if (c.Name == "Lucifer")
+                    c.AbilityCooldown = Program.cool_bad;
+            //  Los cooldowns de los otros asesinos estan en los propios efectos
+                
+                if (c == Program.goodGuy)
+                    c.AbilityCooldown = Program.cool_good;
+            }
             
             // Pausa
             if (cki.Key == ConsoleKey.Escape) 
                 Menu.PauseMenu();
             
             ReturnVictim();
-            
-            // Accion al caer en trampas
-            if (c.PlayerCell == Program.Trap1!.ObjectCell)
-            {
-                var rand = new Random();
 
-                Console.WriteLine("\nHa caido en un agujero. Pierde su ronda intentando salir.");
-                Thread.Sleep(1500);
-                Effects.MantainPlayer(c, c.Turns);
-                Program.Trap1.ObjectCell = Program.grid![0, 0];
-            }
-            if (c.PlayerCell == Program.Trap2!.ObjectCell)
-            {
-                
-            }
-            if (c.PlayerCell == Program.Trap3!.ObjectCell)
-            {
-
-            }
+            TrapAction(c);
             
             // Acciones tras obtener el carro
             if (carTaken) {
@@ -106,7 +72,37 @@ public class Character {
             Program.PaintMaze(Program.grid!);
             Program.GameStatus();
         }
-        c.Turns = temp;
+        c.Turns = temp_turns;
+    }
+    private static void Move(ConsoleKeyInfo cki,Character c) {
+        if ((cki.Key == ConsoleKey.W || cki.Key == ConsoleKey.UpArrow)
+            && c.PlayerCell!.IsLinked(c.PlayerCell.North!))
+        {
+            c.yPos -= 1;
+            c.PlayerCell = Program.grid![c.yPos, c.xPos];
+            c.Turns -= 1;
+        }
+        if ((cki.Key == ConsoleKey.S || cki.Key == ConsoleKey.DownArrow)
+            && c.PlayerCell!.IsLinked(c.PlayerCell.South!))
+        {
+            c.yPos += 1;
+            c.PlayerCell = Program.grid![c.yPos, c.xPos];
+            c.Turns -= 1;
+        }
+        if ((cki.Key == ConsoleKey.A || cki.Key == ConsoleKey.LeftArrow)
+            && c.PlayerCell!.IsLinked(c.PlayerCell.West!))
+        {
+            c.xPos -= 1;
+            c.PlayerCell = Program.grid![c.yPos, c.xPos];
+            c.Turns -= 1;
+        }
+        if ((cki.Key == ConsoleKey.D || cki.Key == ConsoleKey.RightArrow)
+            && c.PlayerCell!.IsLinked(c.PlayerCell.East!))
+        {
+            c.xPos += 1;
+            c.PlayerCell = Program.grid![c.yPos, c.xPos];
+            c.Turns -= 1;
+        }
     }
     private static bool HidingInShelter() {
         return Program.goodGuy!.PlayerCell == Program.Shelter!.ObjectCell;
@@ -164,7 +160,6 @@ public class Character {
             Environment.Exit(0);
         }
     }
-
     private static void RunAbility(Character c) {
         if (c.Name.StartsWith("Fred")) {
             Effects.PutToSleep();
@@ -175,13 +170,47 @@ public class Character {
         if (c.Name.StartsWith("Jas")) {
             Effects.SmashWall();
         }
-        if (c.Name.StartsWith("Joe")) {
-
-        } 
         if (c.Name.StartsWith("Sam")) {
 
-        } 
+        }
         if (c.Name.StartsWith("Const"))
             Effects.SwitchPos();
+    }
+    private static void TrapAction(Character c) {
+        if (FellInTrap(c)) {
+            
+            // Habilidad pasiva de Joel
+            if (c.Name == "Joel" && c.AbilityCooldown == 0) {
+                Console.WriteLine("La intuicion de Joel le permite eludir las trampas durante esta ronda");
+                Thread.Sleep(2000);
+                if (c.Turns == 0)
+                    c.AbilityCooldown = Program.cool_good;
+            }
+            else
+            {
+                if (Trap.Type == "Reten") {
+                    var rand = new Random();
+                    Console.WriteLine("\nHa caido en un agujero. Pierde su ronda intentando salir.");
+                    Thread.Sleep(2000);
+                    Effects.MantainPlayer(c, c.Turns);
+                    //Trap.TrapCell = Program.grid![0, 0]!;
+                }
+                if (Trap.Type == "Consuelo")
+                {
+                
+                }
+                if (Trap.Type == "Devuelve")
+                {
+
+                }
+            }
+        }
+    }
+    public static bool FellInTrap(Character c) {
+        foreach (var trap in Program._Traps!){
+            if (trap.TrapCell == c.PlayerCell)
+                return true;
+        }
+        return false;
     }
 }
