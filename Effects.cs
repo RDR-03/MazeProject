@@ -7,7 +7,7 @@ public class Effects {
 
     public static void SwitchPos() {
         
-        Console.WriteLine($"Constantine llevo a cabo un conjuro de intercambio de posicion con {Program.badGuy!.Name}");
+        Console.WriteLine($"Constantine llevo a cabo un conjuro de intercambio de posición con {Program.badGuy!.Name}");
         Thread.Sleep(2000);
 
         var xTemp = Program.badGuy.xPos;
@@ -36,14 +36,14 @@ public class Effects {
             Console.Clear();
             Program.PaintMaze(Program.grid!);
             Program.GameStatus();
-            Character.Play(Program.badGuy!);
+            Game.Play(Program.badGuy!);
             Program.rounds++;
         }
     }
 
     public static void SmashWall() {
         Console.WriteLine("Jason puede romper una pared en el siguiente movimiento");
-        Console.WriteLine("Introduce una direccion valida hacia la cual moverte");
+        Console.WriteLine("Introduzca una dirección válida hacia la cual moverte");
         
         var ypos = Program.badGuy!.yPos;
         var xpos = Program.badGuy.xPos;
@@ -55,7 +55,7 @@ public class Effects {
         {   
             if (cell.North != null) {
                 if (cell.IsLinked(cell.North)) {
-                    Console.WriteLine("No hay pared en esta direccion que Jason pueda romper. Aun asi continua su marcha");
+                    Console.WriteLine("No hay pared en esta dirección que Jason pueda romper. Aun así continúa su caza");
                     Thread.Sleep(2000);
                 }
                 if (!cell.IsLinked(cell.North)) {
@@ -79,7 +79,7 @@ public class Effects {
         {   
             if (cell.South != null) {
                 if (cell.IsLinked(cell.South)) {
-                    Console.WriteLine("No hay pared en esta direccion que Jason pueda romper. Aun asi continua su marcha");
+                    Console.WriteLine("No hay pared en esta dirección que Jason pueda romper. Aun así continúa su caza");
                     Thread.Sleep(2000);
                 }
                 if (!cell.IsLinked(cell.South)) {
@@ -103,7 +103,7 @@ public class Effects {
         {
             if (cell.East != null) {
                 if (cell.IsLinked(cell.East)) {
-                    Console.WriteLine("No hay pared en esta direccion que Jason pueda romper. Aun asi continua su marcha");
+                    Console.WriteLine("No hay pared en esta dirección que Jason pueda romper. Aun así continúa su caza");
                     Thread.Sleep(2000);
                 }
                 if (!cell.IsLinked(cell.East)) {
@@ -127,7 +127,7 @@ public class Effects {
         {
             if (cell.West != null) {
                 if (cell.IsLinked(cell.West)) {
-                    Console.WriteLine("No hay pared en esta direccion que Jason pueda romper. Aun asi continua su marcha");
+                    Console.WriteLine("No hay pared en esta dirección que Jason pueda romper. Aun así continúa su caza");
                     Thread.Sleep(2000);
                 }
                 if (!cell.IsLinked(cell.West)) {
@@ -146,8 +146,6 @@ public class Effects {
             }
         }
     }
-
-    
     public static void RebuildMaze() {
         Console.WriteLine("Lucifer cambio la estructura del laberinto tras desatar su ira");
         Thread.Sleep(2000);

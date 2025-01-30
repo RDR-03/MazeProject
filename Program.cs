@@ -72,9 +72,8 @@ class Program
         cool_good = goodGuy!.AbilityCooldown;
 
         while (true) {
-            Character.Play(goodGuy!);
-            
-            Character.Play(badGuy!);
+            Game.Play(goodGuy!);
+            Game.Play(badGuy!);
            
             if (goodGuy.AbilityCooldown > 0)
                 goodGuy.AbilityCooldown --;
