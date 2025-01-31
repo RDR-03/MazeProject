@@ -145,7 +145,7 @@ public class Effects {
         }
     }
     public static void RebuildMaze() {
-        Console.WriteLine("Lucifer cambio la estructura del laberinto tras desatar su ira");
+        Console.WriteLine("Lucifer cambió la estructura del laberinto tras desatar su ira");
         Thread.Sleep(2000);
 
         foreach (var cell in Program.grid!.Cells) {

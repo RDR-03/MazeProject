@@ -12,7 +12,6 @@ public class Cell {
     
     // Celdas vinculadas a esta celda
     private readonly Dictionary<Cell, bool> _links;
-    public List<Cell> Links => _links.Keys.ToList();
     public Cell (int r, int c) {
         Row = r;
         Column = c;

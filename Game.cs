@@ -15,11 +15,11 @@ public class Game
                 Console.WriteLine($"{Program.goodGuy.Name} entró en el refugio");
                 shelterVisited = true;
             }
-            if (Program.goodGuy!.PlayerCell == Program.Key.ObjectCell && KeyTaken == false) {
+            if (Program.goodGuy!.PlayerCell == Program.Key!.ObjectCell && KeyTaken == false) {
                 Console.WriteLine($"{Program.goodGuy.Name} encontró una llave");
                 KeyTaken = true;
             }
-            if (Program.goodGuy!.PlayerCell == Program.FKey.ObjectCell && FKT == false) {
+            if (Program.goodGuy!.PlayerCell == Program.FKey!.ObjectCell && FKT == false) {
                 Console.WriteLine($"{Program.goodGuy.Name} encontró una llave");
                 FKT = true;
             }
@@ -125,7 +125,7 @@ public class Game
                     Console.WriteLine("Incluso se da cuenta de que no tiene la llave que supuestamente había encontrado");
                     FKT = false;
                 }
-                Thread.Sleep(2000);
+                Thread.Sleep(5000);
                 Program.badGuy.xPos = 0;
                 Program.badGuy.yPos = Program.grid.Rows - 1;
                 Program.badGuy.PlayerCell = Program.grid[Program.grid.Rows - 1, 0];
@@ -168,7 +168,7 @@ public class Game
         return Program.badGuy!.PlayerCell == Program.goodGuy!.PlayerCell;
     }
     private static void ExitReached() {
-        if (Program.goodGuy!.PlayerCell == Program.maze_exit.ObjectCell) {
+        if (Program.goodGuy!.PlayerCell == Program.maze_exit!.ObjectCell) {
             if (KeyTaken == true) {
                 Console.WriteLine($"\n{Program.goodGuy.Name} logró escapar del laberinto");
                 Console.WriteLine($"{Program.goodGuy.Name} es el ganador de la partida");
@@ -195,7 +195,7 @@ public class Game
             }
             else
             {
-                for (int i = 0; i < Program._Traps.Length; i++) {
+                for (int i = 0; i < Program._Traps!.Length; i++) {
                     if (c.PlayerCell == Program._Traps[i].TrapCell && Program._Traps[i].Fell == false) {
                         Console.WriteLine("\nHa caído en un agujero. Pierde su ronda intentando salir.");
                         Thread.Sleep(2000);

@@ -16,15 +16,6 @@ public class Grid {
             return _grid! [row][column];
         }
     }           
-    public Cell RandomCell() {
-        var rand = new Random();
-        var row = rand.Next(Rows);
-        var col = rand.Next(Columns);
-        var randomCell = this[row, col];
-        if (randomCell == null)
-            throw new InvalidOperationException("Random cell is null");
-        return randomCell;
-    }
     
     // Iterador de filas
     public IEnumerable<List<Cell>> Row {

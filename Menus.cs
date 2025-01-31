@@ -16,6 +16,7 @@ public class Menu
     public static void StartMenu() {
         Console.Clear();
         Console.WriteLine("Escape the Undead\n");
+
         options = new string[]
         {
             "Comenzar a jugar",
@@ -24,10 +25,10 @@ public class Menu
         };
         Console.CursorVisible = false;
         string highlighted = Highlight(options, counter);
-       
+
         Cycle();
         if (counter == 0) {
-           return;
+            return;
         } 
         if (counter == 1) {
             counter = 0;
@@ -53,7 +54,9 @@ public class Menu
             Program.PaintMaze(Program.grid!);
             return;
         }
-        if (counter == 1) GameInfo();
+        if (counter == 1) {
+            GameInfo();
+        }
         if (counter == 2) Environment.Exit(0);
     }
     
@@ -117,7 +120,7 @@ public class Menu
             firstSelection.StartsWith("Lucifer"))
         {
             remainingGroup = "Sobreviviente";
-            remainingChoices = ["Joel (Jo)", "Sam Bridges (SB)", "Constantine (Co)"];
+            remainingChoices = ["Joel (Jo)", "Alan Wake (AW)", "Constantine (Co)"];
         }
         else {
             remainingGroup = "Asesino";
@@ -155,7 +158,7 @@ public class Menu
         if (counter == 2) {
         }
         if (counter == 3) {
-           counter = 1;
+           counter = 2;
            StartMenu();
         }
     }

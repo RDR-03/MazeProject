@@ -47,7 +47,7 @@ class Program
         if (charSelection1.StartsWith("Joel") || charSelection2.StartsWith("Joel"))
             goodGuy = new Character ("Joel", 0, 0, 3, 2);
 
-        else if (charSelection1.StartsWith("Alan") || charSelection2.StartsWith("Sam"))
+        else if (charSelection1.StartsWith("Alan") || charSelection2.StartsWith("Alan"))
             goodGuy = new Character ("Alan Wake", 0, 0, 4, 5, 4);
         
         else if (charSelection1.StartsWith("Constan") || charSelection2.StartsWith("Constan"))
