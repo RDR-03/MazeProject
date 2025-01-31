@@ -3,6 +3,7 @@ public class Cell {
     // Pos en laberinto
     public int Row { get; }
     public int Column { get; }
+        
     // celdas vecinas
     public Cell? North { get; set; }
     public Cell? South { get; set; }

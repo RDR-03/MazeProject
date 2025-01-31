@@ -6,13 +6,14 @@ namespace Project;
 public class Grid {
     public int Rows { get; }
     public int Columns { get; }
+
     private List<List<Cell>>? _grid;
    
     public virtual Cell? this[int row, int column] {
         get {
             if (row < 0 || row >= Rows) return null;
             if (column < 0 || column >= Columns) return null;
-            return _grid? [row][column];
+            return _grid! [row][column];
         }
     }           
     public Cell RandomCell() {

@@ -4,7 +4,6 @@ public class Effects {
     public static void MantainPlayer(Character c, int time){
         c.Turns -= time;
     }
-
     public static void SwitchPos() {
         
         Console.WriteLine($"Constantine llevo a cabo un conjuro de intercambio de posición con {Program.badGuy!.Name}");
@@ -40,7 +39,6 @@ public class Effects {
             Program.rounds++;
         }
     }
-
     public static void SmashWall() {
         Console.WriteLine("Jason puede romper una pared en el siguiente movimiento");
         Console.WriteLine("Introduzca una dirección válida hacia la cual moverte");

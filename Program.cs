@@ -8,7 +8,8 @@ class Program
     public static Grid? grid;
     public static Objects? maze_exit;
     public static Objects? Shelter;
-    public static Objects? Car;
+    public static Objects? Key;
+    public static Objects? FKey;
     
     public static Trap[]? _Traps;
     public static Trap? Trap1;
@@ -40,29 +41,30 @@ class Program
             badGuy = new Character ("Freddy Krueger", grid.Rows - 1, 0, 2, 3);
         
         else if (charSelection1.StartsWith("Luci") || charSelection2.StartsWith("Luci"))
-            badGuy = new Character ("Lucifer", grid.Rows - 1, 0, 3, 5);
+            badGuy = new Character ("Lucifer", grid.Rows - 1, 0, 4, 5);
         
         // Instanciar sobreviviente
         if (charSelection1.StartsWith("Joel") || charSelection2.StartsWith("Joel"))
-            goodGuy = new Character ("Joel", 0, 0, 3, 4);
+            goodGuy = new Character ("Joel", 0, 0, 3, 2);
 
-        else if (charSelection1.StartsWith("Sam") || charSelection2.StartsWith("Sam"))
-            goodGuy = new Character ("Sam Bridges", 0, 0, 5, 3);
+        else if (charSelection1.StartsWith("Alan") || charSelection2.StartsWith("Sam"))
+            goodGuy = new Character ("Alan Wake", 0, 0, 4, 5, 4);
         
         else if (charSelection1.StartsWith("Constan") || charSelection2.StartsWith("Constan"))
-            goodGuy = new Character ("Constantine", 0, 0, 4, 6);
+            goodGuy = new Character ("Constantine", 0, 0, 2, 6);
         
         // Objetos del laberinto
         Random rand = new Random();
-        maze_exit = new Objects ("Exit", grid.Rows/2, grid.Columns - 1);
-        Car = new Objects ("Car", 3, rand.Next(grid.Columns-1));
-        Shelter = new Objects ("Shelter", rand.Next(1,grid.Columns - 2), rand.Next(1,grid.Columns/2));
+        maze_exit = new Objects (grid.Rows/2, grid.Columns - 1);
+        Key = new Objects (3, rand.Next(grid.Columns - 1));
+        FKey = new Objects (rand.Next(grid.Rows - 1), rand.Next(grid.Columns - 1));
+        Shelter = new Objects (rand.Next(1,grid.Rows - 2), rand.Next(1,grid.Columns/2));
         
-        _Traps = new Trap[] {
+        _Traps = [
             Trap1 = new Trap ("Reten",rand.Next(2,grid.Rows - 1), rand.Next(2,grid.Columns/4)),
             Trap2 = new Trap ("Reten",rand.Next(3,grid.Rows - 2), rand.Next(grid.Columns/4,grid.Columns/2)),
             Trap3 = new Trap ("Reten",rand.Next(4,grid.Rows - 4), rand.Next(0,grid.Columns - 1)),
-        };
+        ];
 
         PaintMaze(grid);
         GameStatus();
@@ -104,12 +106,15 @@ class Program
                 
                 // Ubicacion de personajes y objetos
                 string body = "   ";
-                
                 foreach (var trap in _Traps!) {
                     if (trap.TrapCell == cell)
                         body = "T1 ";
                 }
                 
+                if (cell == Key!.ObjectCell && Game.KeyTaken == false)
+                    body = "Key";
+                if (cell == FKey!.ObjectCell && Game.FKT == false)
+                    body = "Fke";
                 if (cell == goodGuy!.PlayerCell) {
                     switch (goodGuy.Name) 
                     {
@@ -119,8 +124,8 @@ class Program
                         case "Constantine":
                             body = "Co ";
                             break;
-                        case "Sam Bridges":
-                            body = "SB ";
+                        case "Alan Wake":
+                            body = "AW ";
                             break;
                     } 
                 }
@@ -140,8 +145,6 @@ class Program
                 }
                 if (cell == Shelter!.ObjectCell)
                     body = "Ref";
-                if (cell == Car!.ObjectCell)
-                    body = "Car";
                 if (cell == maze_exit!.ObjectCell)
                     body = "Sal";
                 
@@ -164,14 +167,20 @@ class Program
         
         table.AddColumn("Jugadores");
         table.AddColumn("Velocidad");
-        table.AddColumn("Reutilizacion de habilidad");
+        table.AddColumn("Tiempo de reposo de la habilidad");
+        table.AddColumn("Capturas restantes");
+
+        table.Columns[1].Alignment(Justify.Center);
+        table.Columns[2].Alignment(Justify.Center);
+        table.Columns[3].Alignment(Justify.Center);
         
+        string capture_left = Convert.ToString(goodGuy!.Life);
         string stamina_bad = Convert.ToString(badGuy!.Turns);
         string stamina_good = Convert.ToString(goodGuy!.Turns);
         string cooldown_bad = Convert.ToString(badGuy.AbilityCooldown);
         string cooldown_good = Convert.ToString(goodGuy.AbilityCooldown);
         
-        table.AddRow([badGuy!.Name, stamina_bad, cooldown_bad]);
+        table.AddRow([badGuy!.Name, stamina_bad, cooldown_bad, capture_left]);
         table.AddRow([goodGuy!.Name, stamina_good, cooldown_good]);
         AnsiConsole.Write(table);
         Console.WriteLine("Presione (esc) para pausar juego");

@@ -2,23 +2,32 @@ namespace Project;
 public class Game
 {
     private static bool shelterVisited;
-    private static bool carTaken;
+    private static bool FallenInTrap = false;
+    public static bool KeyTaken;
+    public static bool FKT;
 
     public static void Play(Character c)
     {
         var temp_turns = c.Turns;
 
         while(c.Turns > 0) {
-            
-            Console.WriteLine($"Es el turno de {c.Name}");
-            
-            if (c.Name != "Joel" && c.AbilityCooldown == 0)
-                Console.WriteLine("Habilidad disponible. Presione (H) para utilizarla");
-            
-            if (Program.goodGuy!.PlayerCell == Program.Shelter!.ObjectCell)
+            if (Program.goodGuy!.PlayerCell == Program.Shelter!.ObjectCell) {
+                Console.WriteLine($"{Program.goodGuy.Name} entró en el refugio");
                 shelterVisited = true;
-              
+            }
+            if (Program.goodGuy!.PlayerCell == Program.Key.ObjectCell && KeyTaken == false) {
+                Console.WriteLine($"{Program.goodGuy.Name} encontró una llave");
+                KeyTaken = true;
+            }
+            if (Program.goodGuy!.PlayerCell == Program.FKey.ObjectCell && FKT == false) {
+                Console.WriteLine($"{Program.goodGuy.Name} encontró una llave");
+                FKT = true;
+            }
             ExitReached();
+
+            Console.WriteLine($"Es el turno de {c.Name}");
+            if ((c.Name != "Joel" && c.Name != "Alan Wake") && c.AbilityCooldown == 0)
+                Console.WriteLine("Habilidad disponible. Presione (H) para utilizarla");
             
             ConsoleKeyInfo cki = Console.ReadKey(true);
             Move(cki, c);
@@ -27,10 +36,10 @@ public class Game
             if (c.Name != "Joel" && c.AbilityCooldown == 0 && cki.Key == ConsoleKey.H) {
                 RunAbility(c);
 
+                //  Los cooldowns de los otros asesinos estan en los propios efectos
                 if (c.Name == "Lucifer")
                     c.AbilityCooldown = Program.cool_bad;
-            //  Los cooldowns de los otros asesinos estan en los propios efectos
-                
+
                 if (c == Program.goodGuy)
                     c.AbilityCooldown = Program.cool_good;
             }
@@ -40,21 +49,16 @@ public class Game
                 Menu.PauseMenu();
             
             ReturnVictim();
-
             TrapAction(c);
-            
-            // Acciones tras obtener el carro
-            if (carTaken) {
-                Program.Car!.xPos = Program.goodGuy.xPos;
-                Program.Car.yPos = Program.goodGuy.yPos;
-                Program.Car.ObjectCell = Program.goodGuy.PlayerCell;
-            }
             
             Program.PaintMaze(Program.grid!);
             Program.GameStatus();
         }
         c.Turns = temp_turns;
+        if (FallenInTrap)
+            c.AbilityCooldown = Program.cool_good;
     }
+    
     private static void Move(ConsoleKeyInfo cki,Character c) {
         if ((cki.Key == ConsoleKey.W || cki.Key == ConsoleKey.UpArrow)
             && c.PlayerCell!.IsLinked(c.PlayerCell.North!))
@@ -86,75 +90,98 @@ public class Game
         }
     }
     private static void RunAbility(Character c) {
-        if (c.Name.StartsWith("Fred")) {
+        if (c.Name.StartsWith("Fred"))
             Effects.PutToSleep();
-        }
-        if (c.Name.StartsWith("Luci")) {
-            Effects.RebuildMaze();
-        }
-        if (c.Name.StartsWith("Jas")) {
-            Effects.SmashWall();
-        }
-        if (c.Name.StartsWith("Sam")) {
 
-        }
+        if (c.Name.StartsWith("Luci"))
+            Effects.RebuildMaze();
+
+        if (c.Name.StartsWith("Jas"))
+            Effects.SmashWall();
+        
         if (c.Name.StartsWith("Const"))
             Effects.SwitchPos();
     }
-     private static bool HidingInShelter() {
+    private static bool HidingInShelter() {
         return Program.goodGuy!.PlayerCell == Program.Shelter!.ObjectCell;
     }
     private static void ReturnVictim() {
         if (VictimReached() && !HidingInShelter()) {
-            Console.WriteLine($"\n{Program.badGuy!.Name} alcanzo a {Program.goodGuy!.Name}");
-            
-            if (carTaken) {
-                int x_temp = Program.goodGuy.xPos!;
-                Program.Car!.xPos = x_temp;
-                int y_temp = Program.goodGuy.yPos!;
-                Program.Car.yPos = y_temp;
-                Cell c_temp = Program.goodGuy.PlayerCell!;
-                Program.Car.ObjectCell = c_temp;
+           
+            // Habilidad pasiva de Alan
+            if (Program.goodGuy.Name.StartsWith("Ala") && Program.goodGuy.AbilityCooldown == 0) {
+                Console.WriteLine("Alan abre los ojos y pone en duda de si lo ocurrido hasta el momento fue un sueño");
                 
-                carTaken = false;
+                if (FKT == true  && KeyTaken == true) {
+                    Console.WriteLine("Incluso se da cuenta de que no tiene la llave que supuestamente había encontrado");
+                    KeyTaken = false;
+                    FKT = false;
+                }
+                else if (KeyTaken == true) {
+                    Console.WriteLine("Incluso se da cuenta de que no tiene la llave que supuestamente había encontrado");
+                    KeyTaken = false;
+                }
+                else if (FKT == true) {
+                    Console.WriteLine("Incluso se da cuenta de que no tiene la llave que supuestamente había encontrado");
+                    FKT = false;
+                }
+                Thread.Sleep(2000);
+                Program.badGuy.xPos = 0;
+                Program.badGuy.yPos = Program.grid.Rows - 1;
+                Program.badGuy.PlayerCell = Program.grid[Program.grid.Rows - 1, 0];
+                Program.goodGuy.AbilityCooldown = Program.cool_good;
             }
+            else {
+                Console.WriteLine($"\n{Program.badGuy!.Name} alcanzó a {Program.goodGuy!.Name}");
+                
+                if (!shelterVisited)
+                {
+                    Thread.Sleep(1500);
+                    Program.goodGuy!.PlayerCell = Program.grid![0,0];
+                    Program.goodGuy.yPos = 0;
+                    Program.goodGuy.xPos = 0;
+                    Program.goodGuy.Life -= 1;
+                }
+                else if (shelterVisited)
+                {
+                    Console.WriteLine($"{Program.goodGuy.Name} regresa al refugio para recuperarse del ataque");
+                    Thread.Sleep(1500);
+                    Program.goodGuy!.PlayerCell = Program.Shelter!.ObjectCell;
+                    Program.goodGuy.yPos = Program.Shelter.yPos;
+                    Program.goodGuy.xPos = Program.Shelter.xPos;
+                    Program.goodGuy.Life -= 1;
+                }
 
-            if (!shelterVisited)
-            {
-                Thread.Sleep(1500);
-                Program.goodGuy!.PlayerCell = Program.grid![0,0];
-                Program.goodGuy.yPos = 0;
-                Program.goodGuy.xPos = 0;
-            }
-            else if (shelterVisited)
-            {
-                Console.WriteLine($"{Program.goodGuy.Name} regresa al refugio para recuperarse del ataque");
-                Thread.Sleep(1500);
-                Program.goodGuy!.PlayerCell = Program.Shelter!.ObjectCell;
-                Program.goodGuy.yPos = Program.Shelter.yPos;
-                Program.goodGuy.xPos = Program.Shelter.xPos;
+                if (Program.goodGuy.Life == 0) {
+                    Console.WriteLine($"{Program.badGuy.Name} acabó con la vida de {Program.goodGuy.Name}");
+                    Console.WriteLine($"{Program.badGuy.Name} ganó la partida");
+                    Environment.Exit(0);
+                }
             }
         }
         else if (VictimReached() && HidingInShelter()) {
             Console.WriteLine($"\n{Program.goodGuy!.Name} está refugiado y {Program.badGuy!.Name} no logra encontrarlo");
-            Thread.Sleep(1500);
+            Thread.Sleep(2000);
         }
     }
     private static bool VictimReached() {
         return Program.badGuy!.PlayerCell == Program.goodGuy!.PlayerCell;
     }
     private static void ExitReached() {
-        if (Program.badGuy!.PlayerCell == Program.maze_exit!.ObjectCell) {
-            Console.WriteLine($"\n{Program.badGuy.Name} ha alcanzado la salida antes que {Program.goodGuy!.Name}");
-            Console.WriteLine($"{Program.badGuy.Name} es el ganador de la partida");
-            Thread.Sleep(1500);
-            Environment.Exit(0);
-        }
         if (Program.goodGuy!.PlayerCell == Program.maze_exit.ObjectCell) {
-            Console.WriteLine($"\n{Program.goodGuy.Name} logro escapar del laberinto");
-            Console.WriteLine($"{Program.goodGuy.Name} es el ganador de la partida");
-            Thread.Sleep(1500);
-            Environment.Exit(0);
+            if (KeyTaken == true) {
+                Console.WriteLine($"\n{Program.goodGuy.Name} logró escapar del laberinto");
+                Console.WriteLine($"{Program.goodGuy.Name} es el ganador de la partida");
+                Thread.Sleep(2000);
+                Environment.Exit(0);
+            }
+            else if (FKT == true) {
+                Console.WriteLine("La llave que trae no es la que abre el portón");
+                Thread.Sleep(2000);
+            }
+            else
+                Console.WriteLine($"{Program.goodGuy.Name} no posee la llave necesaria para abrir el portón");
+
         }
     }
     private static void TrapAction(Character c) {
@@ -162,33 +189,25 @@ public class Game
             
             // Habilidad pasiva de Joel
             if (c.Name == "Joel" && c.AbilityCooldown == 0) {
-                Console.WriteLine("La intuicion de Joel le permite eludir las trampas durante esta ronda");
+                Console.WriteLine("La intuición y experiencia de Joel le permite eludir las trampas durante esta ronda");
                 Thread.Sleep(2000);
-                if (c.Turns == 0)
-                    c.AbilityCooldown = Program.cool_good;
+                FallenInTrap = true;
             }
             else
             {
-                if (Trap.Type == "Reten") {
-                    var rand = new Random();
-                    Console.WriteLine("\nHa caido en un agujero. Pierde su ronda intentando salir.");
-                    Thread.Sleep(2000);
-                    Effects.MantainPlayer(c, c.Turns);
-                    //Trap.TrapCell = Program.grid![0, 0]!;
+                for (int i = 0; i < Program._Traps.Length; i++) {
+                    if (c.PlayerCell == Program._Traps[i].TrapCell && Program._Traps[i].Fell == false) {
+                        Console.WriteLine("\nHa caído en un agujero. Pierde su ronda intentando salir.");
+                        Thread.Sleep(2000);
+                        Effects.MantainPlayer(c, c.Turns);
+                        Program._Traps[i].Fell = true;
+                    }
                 }
-                if (Trap.Type == "Consuelo")
-                {
-                
-                }
-                if (Trap.Type == "Devuelve")
-                {
-
-                }
-            }
+            } 
         }
     }
     public static bool FellInTrap(Character c) {
-        foreach (var trap in Program._Traps!){
+        foreach (var trap in Program._Traps!) {
             if (trap.TrapCell == c.PlayerCell)
                 return true;
         }

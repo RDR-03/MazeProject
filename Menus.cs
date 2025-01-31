@@ -24,17 +24,16 @@ public class Menu
         };
         Console.CursorVisible = false;
         string highlighted = Highlight(options, counter);
-        //while(true) {
-            Cycle();
-            if (counter == 0) {
-               return;
-            } 
-            if (counter == 1) {
-                GameInfo();
-                return;
-            }
-            if (counter == 2) Environment.Exit(0);
-       // }
+       
+        Cycle();
+        if (counter == 0) {
+           return;
+        } 
+        if (counter == 1) {
+            counter = 0;
+            GameInfo();
+        }
+        if (counter == 2) Environment.Exit(0);
     }
     public static void PauseMenu() {
         Console.Clear();
@@ -48,15 +47,14 @@ public class Menu
         
         Console.CursorVisible = false;
         string highlighted = Highlight(options, counter);
-        while(true) {
-            Cycle();
-            if (counter == 0) {
-                Program.PaintMaze(Program.grid!);
-                return;
-            }
-            if (counter == 1) GameInfo();
-            if (counter == 2) Environment.Exit(0);
+        
+        Cycle();
+        if (counter == 0) {
+            Program.PaintMaze(Program.grid!);
+            return;
         }
+        if (counter == 1) GameInfo();
+        if (counter == 2) Environment.Exit(0);
     }
     
     private static string Highlight (string[] items, int option) {
@@ -110,7 +108,7 @@ public class Menu
                 .AddChoiceGroup("Asesinos", 
                     ["Jason (Ja)", "Freddy Krueger (FK)", "Lucifer (Lu)"])
                 .AddChoiceGroup("Sobrevivientes",
-                    ["Joel (Jo)", "Sam Bridges (SB)", "Constantine (Co)"])
+                    ["Joel (Jo)", "Alan Wake (AW)", "Constantine (Co)"])
         );
 
         string remainingGroup;
@@ -118,8 +116,8 @@ public class Menu
         if (firstSelection.StartsWith("Jason") || firstSelection.StartsWith("Freddy") ||
             firstSelection.StartsWith("Lucifer"))
         {
-                remainingGroup = "Sobreviviente";
-                remainingChoices = ["Joel (Jo)", "Sam Bridges (SB)", "Constantine (Co)"];
+            remainingGroup = "Sobreviviente";
+            remainingChoices = ["Joel (Jo)", "Sam Bridges (SB)", "Constantine (Co)"];
         }
         else {
             remainingGroup = "Asesino";
@@ -138,5 +136,27 @@ public class Menu
     }
     private static void GameInfo() {
         Console.Clear();
+        Console.WriteLine("Sobre el juego\n");
+        options = new string[]
+        {
+            "Controles",
+            "Información General",
+            "Personajes",
+            "Atrás"
+        };
+        Console.CursorVisible = false;
+        string highlighted = Highlight(options, counter);
+       
+        Cycle();
+        if (counter == 0) {
+        } 
+        if (counter == 1) {
+        } 
+        if (counter == 2) {
+        }
+        if (counter == 3) {
+           counter = 1;
+           StartMenu();
+        }
     }
 } 
