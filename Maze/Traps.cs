@@ -1,7 +1,7 @@
 namespace Project;
 public class Trap
 {
-    public static string? Type;
+    public string? Type;
     public int xpos;
     public int ypos;
     public Cell? TrapCell;

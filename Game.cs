@@ -26,7 +26,7 @@ public class Game
             ExitReached();
 
             Console.WriteLine($"Es el turno de {c.Name}");
-            if ((c.Name != "Joel" && c.Name != "Alan Wake") && c.AbilityCooldown == 0)
+            if (c.Name != "Joel" && c.Name != "Alan Wake" && c.AbilityCooldown == 0)
                 Console.WriteLine("Habilidad disponible. Presione (H) para utilizarla");
             
             ConsoleKeyInfo cki = Console.ReadKey(true);
@@ -109,7 +109,7 @@ public class Game
         if (VictimReached() && !HidingInShelter()) {
            
             // Habilidad pasiva de Alan
-            if (Program.goodGuy.Name.StartsWith("Ala") && Program.goodGuy.AbilityCooldown == 0) {
+            if (Program.goodGuy!.Name.StartsWith("Ala") && Program.goodGuy.AbilityCooldown == 0) {
                 Console.WriteLine("Alan abre los ojos y pone en duda de si lo ocurrido hasta el momento fue un sueño");
                 
                 if (FKT == true  && KeyTaken == true) {
@@ -126,14 +126,14 @@ public class Game
                     FKT = false;
                 }
                 Thread.Sleep(5000);
-                Program.badGuy.xPos = 0;
-                Program.badGuy.yPos = Program.grid.Rows - 1;
+                Program.badGuy!.xPos = 0;
+                Program.badGuy.yPos = Program.grid!.Rows - 1;
                 Program.badGuy.PlayerCell = Program.grid[Program.grid.Rows - 1, 0];
                 Program.goodGuy.AbilityCooldown = Program.cool_good;
             }
+
             else {
                 Console.WriteLine($"\n{Program.badGuy!.Name} alcanzó a {Program.goodGuy!.Name}");
-                
                 if (!shelterVisited)
                 {
                     Thread.Sleep(1500);
@@ -197,9 +197,37 @@ public class Game
             {
                 for (int i = 0; i < Program._Traps!.Length; i++) {
                     if (c.PlayerCell == Program._Traps[i].TrapCell && Program._Traps[i].Fell == false) {
-                        Console.WriteLine("\nHa caído en un agujero. Pierde su ronda intentando salir.");
+                        if (Program._Traps[i].Type == "Retener") {
+                            Console.WriteLine("\nHa caído en un hueco que estaba oculto. Pierde su ronda intentando salir");
+                            Effects.MantainPlayer(c, c.Turns);
+                        }
+                        if (Program._Traps[i].Type == "Ralentizar") {
+                            Console.WriteLine($"{c.Name} entró en un terreno pantanoso que le ralentiza el movimiento");
+                            Effects.MantainPlayer(c, 1);
+                        }
+                        if (c == Program.goodGuy && Program._Traps[i].Type == "Acercar")
+                        {
+                            Console.WriteLine($"{Program.goodGuy.Name} reveló su posición al enemigo, el cual se acerca inmediante al lugar");
+                            
+                            int new_ypos = 0;
+                            int new_xpos = 0;
+                            while (new_xpos < 0 || new_xpos > Program.grid!.Columns-1
+                                || new_ypos < 0 || new_ypos > Program.grid.Rows - 1)
+                            {
+                                int [] dy = [1, 0, -1, 0];
+                                int [] dx = [0, 1, 0, -1];
+
+                                Random rand = new Random();
+                                int index = rand.Next(0, dx.Length - 1);
+
+                                new_ypos = c.yPos + dy[index];
+                                new_xpos = c.xPos + dx[index];
+                            }
+                            Program.badGuy!.yPos = new_ypos;
+                            Program.badGuy.xPos = new_xpos;
+                            Program.badGuy.PlayerCell = Program.grid[new_ypos, new_xpos];
+                        }
                         Thread.Sleep(2000);
-                        Effects.MantainPlayer(c, c.Turns);
                         Program._Traps[i].Fell = true;
                     }
                 }

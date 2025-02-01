@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="spectre.console" Version="0.49.1" />
-    <PackageReference Include="spectre.console.cli" Version="0.49.1" />
+    <PackageReference Include="System.Windows.Extensions" Version="9.0.1" />
   </ItemGroup>
 
 </Project>

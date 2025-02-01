@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
 using Spectre.Console;
+using System.Media;
 
 namespace Project;
 class Program
@@ -15,15 +16,19 @@ class Program
     public static Trap? Trap1;
     public static Trap? Trap2;
     public static Trap? Trap3;
+    public static Trap? Trap4;
+    public static Trap? Trap5;
+    public static Trap? Trap6;
     
     public static Character? badGuy;
     public static Character? goodGuy;
-    public static int rounds;
     public static int cool_bad;
     public static int cool_good;
+    public static bool game_Initialized;
     
     static void Main(string[] args)
     {               
+        
         Menu.StartMenu();
         (string, string) Selections = Menu.PlayerSelection();
         string charSelection1 = Selections.Item1;
@@ -35,10 +40,10 @@ class Program
 
         // Instanciar asesino
         if (charSelection1.StartsWith("Jason") || charSelection2.StartsWith("Jason"))
-            badGuy = new Character ("Jason", grid.Rows - 1, 0, 3, 4);
+            badGuy = new Character ("Jason", grid.Rows - 1, 0, 3, 3);
 
         else if (charSelection1.StartsWith("Fred") || charSelection2.StartsWith("Fred"))
-            badGuy = new Character ("Freddy Krueger", grid.Rows - 1, 0, 2, 3);
+            badGuy = new Character ("Freddy Krueger", grid.Rows - 1, 0, 2, 4);
         
         else if (charSelection1.StartsWith("Luci") || charSelection2.StartsWith("Luci"))
             badGuy = new Character ("Lucifer", grid.Rows - 1, 0, 4, 5);
@@ -48,10 +53,10 @@ class Program
             goodGuy = new Character ("Joel", 0, 0, 3, 2);
 
         else if (charSelection1.StartsWith("Alan") || charSelection2.StartsWith("Alan"))
-            goodGuy = new Character ("Alan Wake", 0, 0, 4, 5, 4);
+            goodGuy = new Character ("Alan Wake", 0, 0, 2, 4, 4);
         
         else if (charSelection1.StartsWith("Constan") || charSelection2.StartsWith("Constan"))
-            goodGuy = new Character ("Constantine", 0, 0, 2, 6);
+            goodGuy = new Character ("Constantine", 0, 0, 4, 6);
         
         // Objetos del laberinto
         Random rand = new Random();
@@ -61,19 +66,22 @@ class Program
         Shelter = new Objects (rand.Next(1,grid.Rows - 2), rand.Next(1,grid.Columns/2));
         
         _Traps = [
-            Trap1 = new Trap ("Reten",rand.Next(2,grid.Rows - 1), rand.Next(2,grid.Columns/4)),
-            Trap2 = new Trap ("Reten",rand.Next(3,grid.Rows - 2), rand.Next(grid.Columns/4,grid.Columns/2)),
-            Trap3 = new Trap ("Reten",rand.Next(4,grid.Rows - 4), rand.Next(0,grid.Columns - 1)),
+            Trap1 = new Trap ("Retener",rand.Next(2,grid.Rows - 1), rand.Next(0, grid.Columns/2)),
+            Trap2 = new Trap ("Retener",rand.Next(0,grid.Rows - 2), rand.Next(grid.Columns/2, grid.Columns - 1)),
+            Trap3 = new Trap ("Acercar",rand.Next(4,grid.Rows - 1), rand.Next(0, grid.Columns/2)),
+            Trap4 = new Trap ("Acercar",rand.Next(6,grid.Rows - 4), rand.Next(grid.Columns/2, grid.Columns - 1)),
+            Trap5 = new Trap ("Ralentizar",rand.Next(0,grid.Rows - 1), rand.Next(0, grid.Columns/2)),
+            Trap6 = new Trap ("Ralentizar",rand.Next(4,grid.Rows - 4), rand.Next(0, grid.Columns - 1)),
         ];
-
+        
         PaintMaze(grid);
         GameStatus();
         
-        rounds = 0;
         cool_bad = badGuy!.AbilityCooldown;
         cool_good = goodGuy!.AbilityCooldown;
 
         while (true) {
+            game_Initialized = true;
             Game.Play(goodGuy!);
             Game.Play(badGuy!);
            
@@ -81,7 +89,6 @@ class Program
                 goodGuy.AbilityCooldown --;
             if (badGuy.AbilityCooldown > 0)
                 badGuy.AbilityCooldown --;
-            rounds ++;
         }
     }
     
@@ -107,14 +114,14 @@ class Program
                 // Ubicacion de personajes y objetos
                 string body = "   ";
                 foreach (var trap in _Traps!) {
-                    if (trap.TrapCell == cell)
+                    if (trap.TrapCell == cell && trap.Fell == false)
                         body = "T1 ";
                 }
                 
                 if (cell == Key!.ObjectCell && Game.KeyTaken == false)
                     body = "Key";
                 if (cell == FKey!.ObjectCell && Game.FKT == false)
-                    body = "Fke";
+                    body = "Key";
                 if (cell == goodGuy!.PlayerCell) {
                     switch (goodGuy.Name) 
                     {

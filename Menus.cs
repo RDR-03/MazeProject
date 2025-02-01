@@ -15,12 +15,12 @@ public class Menu
     
     public static void StartMenu() {
         Console.Clear();
-        Console.WriteLine("Escape the Undead\n");
+        Console.WriteLine("¿ Escaparás ?\n");
 
         options = new string[]
         {
             "Comenzar a jugar",
-            "Saber acerca del juego",
+            "Sobre el juego",
             "Salir"
         };
         Console.CursorVisible = false;
@@ -38,7 +38,7 @@ public class Menu
     }
     public static void PauseMenu() {
         Console.Clear();
-        Console.WriteLine("Menu de Pausa\n");
+        Console.WriteLine("Menú de Pausa\n");
         options = new string[]
         {
             "Continuar",
@@ -55,11 +55,41 @@ public class Menu
             return;
         }
         if (counter == 1) {
+            counter = 0;
             GameInfo();
         }
         if (counter == 2) Environment.Exit(0);
     }
-    
+    private static void GameInfo() {
+        Console.Clear();
+        Console.WriteLine("Sobre el juego\n");
+        options = new string[]
+        {
+            "Controles",
+            "Información General",
+            "Personajes",
+            "Atrás"
+        };
+        Console.CursorVisible = false;
+        string highlighted = Highlight(options, counter);
+       
+        Cycle();
+        if (counter == 0) {
+            Controls();
+        } 
+        if (counter == 1) {
+        } 
+        if (counter == 2) {
+            counter = 0;
+            CharacterType();
+        }
+        if (counter == 3) {
+            counter = 1;
+            if (Program.game_Initialized == true)
+                PauseMenu();
+            else StartMenu();
+        }
+    }
     private static string Highlight (string[] items, int option) {
         string actualSelection = string.Empty;
         int _highlighted = 0;
@@ -105,7 +135,7 @@ public class Menu
         var H_S = new Style(Color.Red, Color.Default, Decoration.SlowBlink);
         var firstSelection = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title("Jugardor 1 Seleccione Un Personaje")
+                .Title("Jugador 1 Seleccione Un Personaje")
                 .PageSize(8)
                 .HighlightStyle(H_S)
                 .AddChoiceGroup("Asesinos", 
@@ -137,29 +167,50 @@ public class Menu
 
         return (firstSelection,secondSelection);
     }
-    private static void GameInfo() {
+    public static void CharacterType() {
         Console.Clear();
-        Console.WriteLine("Sobre el juego\n");
+        Console.WriteLine("Seleccione que grupo desea conocer\n");
+
         options = new string[]
         {
-            "Controles",
-            "Información General",
-            "Personajes",
+            "Asesinos",
+            "Sobrevivientes",
             "Atrás"
         };
         Console.CursorVisible = false;
         string highlighted = Highlight(options, counter);
-       
+
         Cycle();
         if (counter == 0) {
+            Character.ShowInfo1();
         } 
         if (counter == 1) {
-        } 
+            Character.ShowInfo2();
+        }
         if (counter == 2) {
+            GameInfo();
         }
-        if (counter == 3) {
-           counter = 2;
-           StartMenu();
-        }
+    }
+    private static void Controls() {
+        Console.Clear();
+        Table table = new Table();
+        table.Title = new TableTitle (text:"Controles");
+        
+        table.AddColumn("Acción");
+        table.AddColumn("Tecla");
+        table.AddRow(["Mover hacia arriba","W  o Flecha hacia arriba"]);
+        table.AddRow(["Mover hacia abajo","S  o Flecha hacia abajo"]);
+        table.AddRow(["Mover hacia la derecha","D  o Flecha hacia la derecha"]);
+        table.AddRow(["Mover hacia la izquierda","A  o Flecha hacia la izquierda"]);
+        table.AddRow(["Utilizar habilidad","H"]);
+        table.AddRow(["Pausar","esc"]);
+        AnsiConsole.Write(table);
+
+        Console.WriteLine("\nPresione (esc) o (backspace) para retornar");
+        ConsoleKeyInfo cki = Console.ReadKey(true);
+        if (cki.Key == ConsoleKey.Backspace || cki.Key == ConsoleKey.Escape)
+            GameInfo();
+        else
+            Controls();
     }
 } 

@@ -22,21 +22,16 @@ public class Effects {
         Program.goodGuy.PlayerCell = CellTemp;
     }
     public static void PutToSleep() {
+        Console.WriteLine($"Freddy indujo a {Program.goodGuy!.Name} al sueño por 3 rondas");
         for (int i = 0; i < 2; i++) {
-            Console.WriteLine($"Freddy indujo a {Program.goodGuy!.Name} al sueño y duerme por {3-i} rondas");
             
-            // xq no corre ?
-            // if (i == 2)
-            //    Console.WriteLine($"Freddy indujo a {Program.goodGuy!.Name} al sueño y duerme por 1 ronda");
-
             Thread.Sleep(2000);
             Program.badGuy!.AbilityCooldown = Program.cool_bad;
-
+            
             Console.Clear();
             Program.PaintMaze(Program.grid!);
             Program.GameStatus();
             Game.Play(Program.badGuy!);
-            Program.rounds++;
         }
     }
     public static void SmashWall() {
@@ -51,6 +46,10 @@ public class Effects {
 
         if (cki.Key == ConsoleKey.W || cki.Key == ConsoleKey.UpArrow)
         {   
+            if (cell!.North == null) {
+                Console.WriteLine("Jason no puede romper esta pared");
+                Thread.Sleep(2000);
+            }
             if (cell.North != null) {
                 if (cell.IsLinked(cell.North)) {
                     Console.WriteLine("No hay pared en esta dirección que Jason pueda romper. Aun así continúa su caza");
@@ -67,14 +66,14 @@ public class Effects {
                 Program.badGuy.PlayerCell = Program.grid![ypos, xpos];
                 Program.badGuy.Turns -= 1;
             }
-            if (cell.North == null) {
-                Console.WriteLine("Jason no puede romper esta pared");
-                Thread.Sleep(2000);
-            }
         }
             
         if (cki.Key == ConsoleKey.S || cki.Key == ConsoleKey.DownArrow)
         {   
+            if (cell!.South == null) {
+                Console.WriteLine("Jason no puede romper esta pared");
+                Thread.Sleep(2000);
+            }
             if (cell.South != null) {
                 if (cell.IsLinked(cell.South)) {
                     Console.WriteLine("No hay pared en esta dirección que Jason pueda romper. Aun así continúa su caza");
@@ -91,14 +90,14 @@ public class Effects {
                 Program.badGuy.PlayerCell = Program.grid![ypos, xpos];
                 Program.badGuy.Turns -= 1;
             }
-            if (cell.South == null) {
-                Console.WriteLine("Jason no puede romper esta pared");
-                Thread.Sleep(2000);
-            }
         }
         
         if (cki.Key == ConsoleKey.D || cki.Key == ConsoleKey.RightArrow)
         {
+            if (cell!.East == null) {
+                Console.WriteLine("Jason no puede romper esta pared");
+                Thread.Sleep(2000);
+            }
             if (cell.East != null) {
                 if (cell.IsLinked(cell.East)) {
                     Console.WriteLine("No hay pared en esta dirección que Jason pueda romper. Aun así continúa su caza");
@@ -115,14 +114,14 @@ public class Effects {
                 Program.badGuy.PlayerCell = Program.grid![ypos, xpos];
                 Program.badGuy.Turns -= 1;
             }
-            if (cell.East == null) {
-                Console.WriteLine("Jason no puede romper esta pared");
-                Thread.Sleep(2000);
-            }
         }
         
         if (cki.Key == ConsoleKey.A || cki.Key == ConsoleKey.LeftArrow)
         {
+            if (cell!.West == null) {
+                Console.WriteLine("Jason no puede romper esta pared");
+                Thread.Sleep(2000);
+            }
             if (cell.West != null) {
                 if (cell.IsLinked(cell.West)) {
                     Console.WriteLine("No hay pared en esta dirección que Jason pueda romper. Aun así continúa su caza");
@@ -137,10 +136,6 @@ public class Effects {
 
                 Program.badGuy.PlayerCell = Program.grid![ypos, xpos];
                 Program.badGuy.Turns -= 1;
-            }
-            if (cell.West == null) {
-                Console.WriteLine("Jason no puede romper esta pared");
-                Thread.Sleep(2000);
             }
         }
     }
@@ -159,6 +154,7 @@ public class Effects {
                 cell.Unlink(cell.West!);
         }
 
+        MazeResolve.CreateMaze(Program.grid);
         MazeResolve.CreateMaze(Program.grid);
     }
 }
