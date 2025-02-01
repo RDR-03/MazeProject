@@ -22,7 +22,7 @@ public class Effects {
         Program.goodGuy.PlayerCell = CellTemp;
     }
     public static void PutToSleep() {
-        Console.WriteLine($"Freddy indujo a {Program.goodGuy!.Name} al sueño por 3 rondas");
+        Console.WriteLine($"Freddy indujo a {Program.goodGuy!.Name} a dormir por 2 rondas");
         for (int i = 0; i < 2; i++) {
             
             Thread.Sleep(2000);

@@ -15,7 +15,7 @@ public class Menu
     
     public static void StartMenu() {
         Console.Clear();
-        Console.WriteLine("¿ Escaparás ?\n");
+        Console.WriteLine("¿Escaparás?\n");
 
         options = new string[]
         {
@@ -78,7 +78,8 @@ public class Menu
             Controls();
         } 
         if (counter == 1) {
-        } 
+            GeneralInfo();
+        }
         if (counter == 2) {
             counter = 0;
             CharacterType();
@@ -190,6 +191,23 @@ public class Menu
         if (counter == 2) {
             GameInfo();
         }
+    }
+    private static void GeneralInfo() {
+        Console.Clear();
+        Console.WriteLine("Descripción del juego");
+        Console.Write("El juego de laberinto ¿Escaparás? basa su trama en las persecuciones de las historias de terror y suspenso.\n");
+        Console.WriteLine("Historia");
+        Console.Write("Los perseguidores están inspirados en villanos conocidos de historias de terror. Siguiendo una estela parecida, los sobrevivientes que se encuentran en el juego son conocidos, pues están vinculados a tramas oscuras y llenas de suspenso identificables (sin ser necesariamente del género de terror)\n");
+        Console.WriteLine("Objetivos");
+        Console.Write("Los personajes que pertenecen al grupo de Asesinos consiguen la victoria si alcanzan determinada cantidad de veces al personaje perteneciente al grupo contrario.)\n");
+        Console.Write("Los personajes que pertenecen al grupo de Supervivientes ganan si logran escapar del laberinto tras conseguir la llave que desbloquea la salida.");
+    
+        Console.WriteLine("\nPresione (esc) o (backspace) para retornar");
+        ConsoleKeyInfo cki = Console.ReadKey(true);
+        if (cki.Key == ConsoleKey.Backspace || cki.Key == ConsoleKey.Escape)
+            GameInfo();
+        else
+            GeneralInfo();
     }
     private static void Controls() {
         Console.Clear();
