@@ -205,31 +205,14 @@ public class Game
                         if (Program._Traps[i].Type == "Ralentizar") {
                             Console.WriteLine($"{c.Name} entró en un terreno pantanoso que le ralentiza el movimiento");
                             Effects.MantainPlayer(c, 1);
+                            if (c.Turns < 0)
+                                c.Turns = 0;
                             Program._Traps[i].Fell = true;
                         }
                         if (c == Program.goodGuy && Program._Traps[i].Type == "Acercar")
                         {
-                            Console.WriteLine($"{Program.goodGuy.Name} reveló su posición al enemigo, el cual se acerca inmediante al lugar");
-                            int new_ypos;
-                            int new_xpos;
-                            int [] dy = [1, 0, -1, 0];
-                            int [] dx = [0, 1, 0, -1];
-
-                            while (true)
-                            {
-                                new_ypos = 0;
-                                new_xpos = 0;
-                                Random rand = new Random();
-                                int index = rand.Next(0, dx.Length - 1);
-
-                                new_ypos = c.yPos + dy[index];
-                                new_xpos = c.xPos + dx[index];
-                                if (new_xpos > 0 && new_xpos < Program.grid!.Columns - 1 && new_ypos > 0 && new_ypos < Program.grid.Rows - 1)
-                                    break;
-                            }
-                            Program.badGuy!.yPos = new_ypos;
-                            Program.badGuy.xPos = new_xpos;
-                            Program.badGuy.PlayerCell = Program.grid[new_ypos, new_xpos];
+                            Console.WriteLine($"{Program.goodGuy.Name} reveló su posición al enemigo, el cual se acerca inmediatamente al lugar");
+                            Effects.BringClose();
                             Program._Traps[i].Fell = true;
                         }
                         Thread.Sleep(2000);

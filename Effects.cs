@@ -1,6 +1,26 @@
 namespace Project;
 public class Effects {
+    public static void BringClose() {
+        int new_ypos;
+        int new_xpos;
+        int [] dy = [1, 0, -1, 0];
+        int [] dx = [0, 1, 0, -1];
 
+        while (true)
+        {
+            new_ypos = 0;
+            new_xpos = 0;
+            Random rand = new Random();
+            int index = rand.Next(0, dx.Length - 1);
+            new_ypos = Program.goodGuy!.yPos + dy[index];
+            new_xpos = Program.goodGuy.xPos + dx[index];
+            if (new_xpos > 0 && new_xpos < Program.grid!.Columns - 1 && new_ypos > 0 && new_ypos < Program.grid.Rows - 1)
+                break;
+        }
+        Program.badGuy!.yPos = new_ypos;
+        Program.badGuy.xPos = new_xpos;
+        Program.badGuy.PlayerCell = Program.grid[new_ypos, new_xpos];
+    }
     public static void MantainPlayer(Character c, int time){
         c.Turns -= time;
     }

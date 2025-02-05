@@ -28,7 +28,12 @@ class Program
     
     static void Main(string[] args)
     {               
-        
+        if (OperatingSystem.IsWindows()) {
+            SoundPlayer main = new SoundPlayer();
+            main.SoundLocation = "Haunting_Menu.wav";
+            main.Load();
+            main.PlayLooping();
+        }
         Menu.StartMenu();
         (string, string) Selections = Menu.PlayerSelection();
         string charSelection1 = Selections.Item1;
@@ -76,6 +81,13 @@ class Program
         
         PaintMaze(grid);
         GameStatus();
+        
+        if (OperatingSystem.IsWindows()) {
+            SoundPlayer main = new SoundPlayer();
+            main.SoundLocation = "Haunting_Play.wav";
+            main.Load();
+            main.PlayLooping();
+        }
         
         cool_bad = badGuy!.AbilityCooldown;
         cool_good = goodGuy!.AbilityCooldown;
