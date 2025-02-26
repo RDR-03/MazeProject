@@ -7,123 +7,119 @@ using Spectre.Console;
 namespace Project;
 public class Menu
 {
-    static string[]? options;
+    string[] options;
     static int counter = 0;
-    static ConsoleKeyInfo cki;
-    static readonly int x = Console.CursorLeft;
-    static readonly int y = Console.CursorTop;
+    string title;
 
-    public static void StartMenu() {
-        Console.Clear();
-        Console.WriteLine("¿Escaparás?\n");
-        options = new string[]
-        {
-            "Comenzar a jugar",
-            "Sobre el juego",
-            "Salir"
-        };
-        Console.CursorVisible = false;
-        string highlighted = Highlight(options, counter);
-
-        Cycle();
-        if (counter == 0) return;
-        if (counter == 1) {
-            counter = 0;
-            GameInfo();
-        }
-        if (counter == 2) Environment.Exit(0);
+    private Menu (string title, string[] options) {
+        this.title = title;
+        this.options = options;
     }
-    public static void PauseMenu() {
-        Console.Clear();
-        Console.WriteLine("Menú de Pausa\n");
-        options = new string[]
-        {
-            "Continuar",
-            "Sobre el juego",
-            "Salir"
-        };
-        Console.CursorVisible = false;
-        string highlighted = Highlight(options, counter);
-        
-        Cycle();
-        if (counter == 0) {
-            Program.PaintMaze(Program.grid!);
-            return;
-        }
-        if (counter == 1) {
-            counter = 0;
-            GameInfo();
-        }
-        if (counter == 2) Environment.Exit(0);
-    }
-    private static void GameInfo() {
-        Console.Clear();
-        Console.WriteLine("Sobre el juego\n");
-        options = new string[]
-        {
-            "Controles",
-            "Información General",
-            "Personajes",
-            "Atrás"
-        };
-        
-        string highlighted = Highlight(options, counter);
-       
-        Cycle();
-        if (counter == 0) {
-            Controls();
-        } 
-        if (counter == 1) {
-            GeneralInfo();
-        }
-        if (counter == 2) {
-            counter = 0;
-            CharacterType();
-        }
-        if (counter == 3) {
-            counter = 1;
-            if (Program.game_Initialized == true)
-                PauseMenu();
-            else StartMenu();
-        }
-    }
-    private static string Highlight (string[] items, int option) {
-        string actualSelection = string.Empty;
-        int _highlighted = 0;
-        Array.ForEach(items, element =>
-        {
-            if (_highlighted == option) {
+    private void DisplayOptions() {
+        Console.WriteLine(title);
+        for (int i = 0; i < options.Length; i++) {
+            string current_option = options[i];
+            if (i == counter) {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"> {element} <");
+                Console.WriteLine($">> {current_option} <<");
                 Console.ForegroundColor = ConsoleColor.White;
-                actualSelection = element;
             }
-            else {
-                Console.Write(new string(' ', Console.WindowWidth));
-                Console.CursorLeft = 0;
-                Console.WriteLine(element);
-            }
-            _highlighted ++;
-        });
-        
-        return actualSelection;
+            else
+                Console.WriteLine(current_option);
+        }
     }
-    private static void Cycle() {
-        while((cki = Console.ReadKey(true)).Key != ConsoleKey.Enter)
-        {
-            if (cki.Key == ConsoleKey.W || cki.Key == ConsoleKey.UpArrow) {
+    private int Cycle() {
+        ConsoleKey keyPressed;
+        do {
+            Console.Clear();
+            Console.CursorVisible = false;
+            DisplayOptions();
+
+            ConsoleKeyInfo cki = Console.ReadKey(true);
+            keyPressed = cki.Key;
+
+            if (keyPressed == ConsoleKey.W || keyPressed == ConsoleKey.UpArrow) {
                 if (counter == 0) continue;
                 counter --;
             }
-            if (cki.Key == ConsoleKey.S || cki.Key == ConsoleKey.DownArrow) {
+            if (keyPressed == ConsoleKey.S || keyPressed == ConsoleKey.DownArrow) {
                 if (counter == options!.Length - 1) continue;
                 counter ++;
             }
+
+        } while (keyPressed != ConsoleKey.Enter);
+
+        return counter;
+    }
+    
+    public static void Start() {
+        Console.Clear();
+        string prompt = @"
+█     █░ ██▓ ██▓     ██▓       ▓██   ██▓ ▒█████   █    ██    ▓█████   ██████  ▄████▄   ▄▄▄       ██▓███  ▓█████ 
+▓█░ █ ░█░▓██▒▓██▒    ▓██▒        ▒██  ██▒▒██▒  ██▒ ██  ▓██▒   ▓█   ▀ ▒██    ▒ ▒██▀ ▀█  ▒████▄    ▓██░  ██▒▓█   ▀ 
+▒█░ █ ░█ ▒██▒▒██░    ▒██░         ▒██ ██░▒██░  ██▒▓██  ▒██░   ▒███   ░ ▓██▄   ▒▓█    ▄ ▒██  ▀█▄  ▓██░ ██▓▒▒███   
+░█░ █ ░█ ░██░▒██░    ▒██░         ░ ▐██▓░▒██   ██░▓▓█  ░██░   ▒▓█  ▄   ▒   ██▒▒▓▓▄ ▄██▒░██▄▄▄▄██ ▒██▄█▓▒ ▒▒▓█  ▄ 
+░░██▒██▓ ░██░░██████▒░██████▒     ░ ██▒▓░░ ████▓▒░▒▒█████▓    ░▒████▒▒██████▒▒▒ ▓███▀ ░ ▓█   ▓██▒▒██▒ ░  ░░▒████▒
+░ ▓░▒ ▒  ░▓  ░ ▒░▓  ░░ ▒░▓  ░      ██▒▒▒ ░ ▒░▒░▒░ ░▒▓▒ ▒ ▒    ░░ ▒░ ░▒ ▒▓▒ ▒ ░░ ░▒ ▒  ░ ▒▒   ▓▒█░▒▓▒░ ░  ░░░ ▒░ ░
+  ▒ ░ ░   ▒ ░░ ░ ▒  ░░ ░ ▒  ░    ▓██ ░▒░   ░ ▒ ▒░ ░░▒░ ░ ░     ░ ░  ░░ ░▒  ░ ░  ░  ▒     ▒   ▒▒ ░░▒ ░      ░ ░  ░
+  ░   ░   ▒ ░  ░ ░     ░ ░       ▒ ▒ ░░  ░ ░ ░ ▒   ░░░ ░ ░       ░   ░  ░  ░  ░          ░   ▒   ░░          ░   
+    ░     ░      ░  ░    ░  ░    ░ ░         ░ ░     ░           ░  ░      ░  ░ ░            ░  ░            ░  ░
+                                 ░ ░                                          ░                                  ";
         
-            Console.CursorLeft = x;
-            Console.CursorTop = y;
-            string highlighted = Highlight(options!, counter);
+        string[] options = {"Comenzar a jugar","Sobre el juego","Salir"};
+        Menu main = new Menu(prompt,options);
+        int selected_option = main.Cycle();
+        
+        if (selected_option == 1) {
+            counter = 0;
+            Info();
         }
+        if (selected_option == 2) Environment.Exit(0);
+    }
+    public static void Pause() {
+        Console.Clear();
+        string prompt = "Menú de Pausa\n";
+        string[] options = {"Continuar","Sobre el juego","Salir"};
+        Menu pause = new Menu(prompt,options);
+        int selected_option = pause.Cycle();
+        
+        if (selected_option == 1) {
+            counter = 0;
+            Info();
+        }
+        if (selected_option == 2) Environment.Exit(0);
+    }
+    public static void Info() {
+        Console.Clear();
+        string prompt = "Sobre el juego\n";
+        string[] options = {"Controles","Información General","Personajes","Atrás"};
+        Menu info = new Menu(prompt,options);
+        int selected_option = info.Cycle();
+        
+        if (selected_option == 0) Controls();
+        if (selected_option == 1) GeneralInfo();
+        if (selected_option == 2) {
+            counter = 0;
+            CharacterType();
+        }
+        if (selected_option == 3) {
+            counter = 1;
+            if (Program.game_Initialized == false)
+                Start();
+            else Pause();
+        }
+    }
+
+    public static void CharacterType() {
+        Console.Clear();
+        string prompt = "Seleccione que grupo desea conocer\n";
+        string[] options ={"Asesinos","Sobrevivientes","Atrás"};
+        Menu type = new Menu(prompt,options);
+        int selected_option = type.Cycle();
+        
+        if (selected_option == 0) Character.ShowInfo1();
+        if (selected_option == 1) Character.ShowInfo2();
+        if (selected_option == 2) Info();
     }
     
     public static (string, string) PlayerSelection() {
@@ -164,30 +160,6 @@ public class Menu
 
         return (firstSelection,secondSelection);
     }
-    public static void CharacterType() {
-        Console.Clear();
-        Console.WriteLine("Seleccione que grupo desea conocer\n");
-
-        options = new string[]
-        {
-            "Asesinos",
-            "Sobrevivientes",
-            "Atrás"
-        };
-        Console.CursorVisible = false;
-        string highlighted = Highlight(options, counter);
-
-        Cycle();
-        if (counter == 0) {
-            Character.ShowInfo1();
-        } 
-        if (counter == 1) {
-            Character.ShowInfo2();
-        }
-        if (counter == 2) {
-            GameInfo();
-        }
-    }
     private static void GeneralInfo() {
         Console.Clear();
         Console.WriteLine("Descripción del juego");
@@ -204,9 +176,10 @@ Siguiendo una estela parecida, los sobrevivientes que se encuentran en el juego 
         Console.WriteLine("\nPresione (esc) o (backspace) para retornar");
         ConsoleKeyInfo cki = Console.ReadKey(true);
         if (cki.Key == ConsoleKey.Backspace || cki.Key == ConsoleKey.Escape)
-            GameInfo();
-        else
-            GeneralInfo();
+            {
+                Info();
+            }
+        else GeneralInfo();
     }
     private static void Controls() {
         Console.Clear();
@@ -226,8 +199,9 @@ Siguiendo una estela parecida, los sobrevivientes que se encuentran en el juego 
         Console.WriteLine("\nPresione (esc) o (backspace) para retornar");
         ConsoleKeyInfo cki = Console.ReadKey(true);
         if (cki.Key == ConsoleKey.Backspace || cki.Key == ConsoleKey.Escape)
-            GameInfo();
-        else
-            Controls();
+        {
+            Info();
+        }
+        else Controls();
     }
 } 

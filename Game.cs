@@ -46,7 +46,7 @@ public class Game
             
             // Pausa
             if (cki.Key == ConsoleKey.Escape) 
-                Menu.PauseMenu();
+                Menu.Pause();
             
             ReturnVictim();
             TrapAction(c);
@@ -113,7 +113,7 @@ public class Game
                 Console.WriteLine("Alan abre los ojos y pone en duda de si lo ocurrido hasta el momento fue un sueño");
                 
                 if (FKT == true  && KeyTaken == true) {
-                    Console.WriteLine("Incluso se da cuenta de que no tiene la llave que supuestamente había encontrado");
+                    Console.WriteLine("Incluso se da cuenta de que no tiene las llaves que supuestamente había encontrado");
                     KeyTaken = false;
                     FKT = false;
                 }
@@ -134,6 +134,12 @@ public class Game
 
             else {
                 Console.WriteLine($"\n{Program.badGuy!.Name} alcanzó a {Program.goodGuy!.Name}");
+                if (Program.goodGuy.Life == 0) {
+                    Console.WriteLine($"{Program.badGuy.Name} acabó con la vida de {Program.goodGuy.Name}");
+                    Console.WriteLine($"{Program.badGuy.Name} ganó la partida");
+                    Environment.Exit(0);
+                }
+                
                 if (!shelterVisited)
                 {
                     Thread.Sleep(1500);
@@ -150,12 +156,6 @@ public class Game
                     Program.goodGuy.yPos = Program.Shelter.yPos;
                     Program.goodGuy.xPos = Program.Shelter.xPos;
                     Program.goodGuy.Life -= 1;
-                }
-
-                if (Program.goodGuy.Life == 0) {
-                    Console.WriteLine($"{Program.badGuy.Name} acabó con la vida de {Program.goodGuy.Name}");
-                    Console.WriteLine($"{Program.badGuy.Name} ganó la partida");
-                    Environment.Exit(0);
                 }
             }
         }
@@ -221,7 +221,7 @@ public class Game
             } 
         }
     }
-    public static bool FellInTrap(Character c) {
+    private static bool FellInTrap(Character c) {
         foreach (var trap in Program._Traps!) {
             if (trap.TrapCell == c.PlayerCell)
                 return true;

@@ -34,7 +34,8 @@ class Program
             main.Load();
             main.PlayLooping();
         }
-        Menu.StartMenu();
+        Menu.Start();
+        
         (string, string) Selections = Menu.PlayerSelection();
         string charSelection1 = Selections.Item1;
         string charSelection2 = Selections.Item2;
