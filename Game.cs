@@ -33,7 +33,7 @@ public class Game
             Move(cki, c);
             
             // Activar habilidad
-            if (c.Name != "Joel" && c.AbilityCooldown == 0 && cki.Key == ConsoleKey.H) {
+            if (c.AbilityCooldown == 0 && cki.Key == ConsoleKey.H) {
                 RunAbility(c);
 
                 //  Los cooldowns de los otros asesinos estan en los propios efectos
@@ -55,8 +55,10 @@ public class Game
             Program.GameStatus();
         }
         c.Turns = temp_turns;
-        if (FallenInTrap)
-            c.AbilityCooldown = Program.cool_good;
+        if (FallenInTrap == true) {
+            Program.goodGuy!.AbilityCooldown = Program.cool_good;
+            FallenInTrap = false;
+        }
     }
     
     private static void Move(ConsoleKeyInfo cki,Character c) {
