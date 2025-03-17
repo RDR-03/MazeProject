@@ -96,10 +96,10 @@ class Program
         while (true) {
             game_Initialized = true;
             Game.Play(goodGuy!);
-            Game.Play(badGuy!);
-           
             if (goodGuy.AbilityCooldown > 0)
                 goodGuy.AbilityCooldown --;
+           
+            Game.Play(badGuy!);
             if (badGuy.AbilityCooldown > 0)
                 badGuy.AbilityCooldown --;
         }

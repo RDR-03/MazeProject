@@ -21,6 +21,15 @@ public class MazeResolve{
                 visited.Add(chosenNeighbor);
             }
             else stack.Pop();
+            
+            // Evitar tener celdas sin ninguna pared
+            if (currentCell.IsLinked(currentCell.East!) &&currentCell.IsLinked(currentCell.North!)
+                &&currentCell.IsLinked(currentCell.West!) &&currentCell.IsLinked(currentCell.South!))
+            {
+                Cell[] neighbors = {currentCell.West!, currentCell.North!, currentCell.South!, currentCell.East!};
+                Random rand = new Random();
+                currentCell.Unlink(neighbors[rand.Next(4)]);
+            }
         }
     }
     private static List<Cell> GetUnvisitedNeighbors(Cell cell, HashSet<Cell> visited)

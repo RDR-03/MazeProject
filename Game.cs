@@ -62,7 +62,7 @@ public class Game
         }
         c.Turns = temp_turns;
         if (FallenInTrap == true) {
-            Program.goodGuy!.AbilityCooldown = Program.cool_good;
+            Program.goodGuy!.AbilityCooldown = Program.cool_good + 1;
             FallenInTrap = false;
         }
     }
