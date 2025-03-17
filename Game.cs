@@ -16,11 +16,17 @@ public class Game
                 shelterVisited = true;
             }
             if (Program.goodGuy!.PlayerCell == Program.Key!.ObjectCell && KeyTaken == false) {
-                Console.WriteLine($"{Program.goodGuy.Name} encontró una llave");
+                if (FKT == false) 
+                    Console.WriteLine($"{Program.goodGuy.Name} encontró una llave");
+                
+                else Console.WriteLine($"{Program.goodGuy.Name} encontró otra llave");
                 KeyTaken = true;
             }
             if (Program.goodGuy!.PlayerCell == Program.FKey!.ObjectCell && FKT == false) {
-                Console.WriteLine($"{Program.goodGuy.Name} encontró una llave");
+                if (KeyTaken == false)
+                    Console.WriteLine($"{Program.goodGuy.Name} encontró una llave");
+                
+                else Console.WriteLine($"{Program.goodGuy.Name} encontró otra llave");
                 FKT = true;
             }
             ExitReached();
@@ -139,6 +145,7 @@ public class Game
                 if (Program.goodGuy.Life == 0) {
                     Console.WriteLine($"{Program.badGuy.Name} acabó con la vida de {Program.goodGuy.Name}");
                     Console.WriteLine($"{Program.badGuy.Name} ganó la partida");
+                    Thread.Sleep(2000);
                     Environment.Exit(0);
                 }
                 

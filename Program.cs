@@ -147,7 +147,7 @@ class Program
                         case "Alan Wake":
                             body = "AW ";
                             break;
-                    } 
+                    }
                 }
                 if (cell == badGuy!.PlayerCell) {
                     switch (badGuy.Name) 
@@ -161,7 +161,7 @@ class Program
                         case "Lucifer":
                             body = "Lu ";
                             break;
-                    } 
+                    }
                 }
                 if (cell == Shelter!.ObjectCell)
                     body = "Ref";
@@ -179,7 +179,7 @@ class Program
             output.AppendLine(top);
             output.AppendLine(bottom);
         }
-        Console.WriteLine(output.ToString());
+        Console.WriteLine(output);
     }
     public static void GameStatus() { 
         Table table = new Table();

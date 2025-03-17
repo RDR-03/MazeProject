@@ -8,8 +8,6 @@ public class Effects {
 
         while (true)
         {
-            new_ypos = 0;
-            new_xpos = 0;
             Random rand = new Random();
             int index = rand.Next(0, dx.Length - 1);
             new_ypos = Program.goodGuy!.yPos + dy[index];
@@ -160,7 +158,7 @@ public class Effects {
         }
     }
     public static void RebuildMaze() {
-        Console.WriteLine("Lucifer cambió la estructura del laberinto tras desatar su ira");
+        Console.WriteLine("Lucifer cambió la estructura del laberinto buscando entretenerse");
         Thread.Sleep(2000);
 
         foreach (var cell in Program.grid!.Cells) {
